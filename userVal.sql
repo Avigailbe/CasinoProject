@@ -171,11 +171,12 @@ begin
 					set @userNameValid = 'N'
 					return
 		end
-	
+
+
 		--check if password is legal
 		exec usp_insertAppLog 'usp_validate_playerDetails', @variableString, 'Validating password. Checking is syntax is valid. Calling udf_PasswordSyntaxValid function'	
 		if ((select dbo.udf_PasswordSyntaxValid(@playerPassword, @username)) = 'Y')
-			begin
+			begin				
 				set @variableString = '@username = '+@username+', @playerPassword = '+@playerPassword
 				exec usp_insertAppLog 'usp_validate_playerDetails', @variableString, 'Validating password. Checking is freqently used'	
 				--check if password exists in git password table
@@ -183,7 +184,17 @@ begin
 						where gitPassword = @playerPassword COLLATE SQL_Latin1_General_CP1_CS_AS)=0)
 					begin
 						exec usp_insertAppLog 'usp_validate_playerDetails', @variableString, 'Password is not freqently used - valid'
-						set @passwordValid= 'Y'
+						--check if password passes external validations
+						if ((select dbo.udf_PasswordExtValid (@playerPassword)) = 'Y')
+							begin
+								exec usp_insertAppLog 'usp_validate_playerDetails', @variableString, 'Password passed external validations - valid'
+								set @passwordValid= 'Y'
+							end
+						else
+							begin
+								exec usp_insertAppLog 'usp_validate_playerDetails', @variableString, 'Password failed external validations - invalid'
+								set @passwordValid= 'N'
+							end
 					end
 				else
 					begin
@@ -524,6 +535,41 @@ begin
 end;
 
 go
+
+sp_configure 'clr enabled' , 1
+	reconfigure
+	go
+
+create or alter function udf_PasswordExtValid (@playerPassword playerPasswordDt) 
+returns char
+as
+/*
+select dbo.udf_PasswordExtValid
+(
+           'Avalasord9'		   
+)
+*/
+begin
+	declare 
+	@isExPasswordValid			varchar(1)
+
+	set @isExPasswordValid = (select dbo.PasswordKey (@playerPassword))
+
+	if @isExPasswordValid = '1'
+		begin
+			return 'Y'
+		end
+	else
+		begin
+			return 'N'
+		end
+	return ''
+end
+
+go
+sp_configure 'clr enabled' , 0
+go
+reconfigure
 
 --drop proc usp_lobby
 

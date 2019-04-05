@@ -120,16 +120,17 @@ end
 
 --connections check procedure for connections>100 Casino job
 
-create or alter proc usp_connectionsCheck 
-		
+create or alter proc usp_connectionsCheck 		
 as
 /*
-exec usp_betBonus
+exec usp_connectionsCheck
 */
 begin
 	declare 
-	@amount				int
-	@adminMailAddress	emailAddressDt
+	@amount				int,
+	@adminMailAddress	emailAddressDt,
+	@mailSubject		nvarchar(100),
+	@mailBody			nvarchar(200)
 
 	set @adminMailAddress = (select cast(companyValue as int) from Admin.utbl_CompanyDefinitions where companyKey = 'adminMailAddress')
 	set @amount = (select count(*)
@@ -139,13 +140,13 @@ begin
 	if(@amount >100)
 	begin
 		--send mail notification of connection amount
-		set @subject = 'Password reset for Casino playerThe number of : '+@username
-		set @playerBody = 'Your new password is '+@newPassword
+		set @mailSubject = 'Number of connections'
+		set @mailBody = 'The number of connection are > 100 at the moment'
 		exec msdb.dbo.sp_send_dbmail 
 							@profile_name = 'Casino Support Team',
-							@recipients=@emailToAddress,
-							@subject=@playerSubject,
-							@body=@playerBody
+							@recipients=@adminMailAddress,
+							@subject=@mailSubject,
+							@body=@mailBody
 	end
 end
 	
