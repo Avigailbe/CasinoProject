@@ -1,11 +1,11 @@
 USE [msdb]
 GO
 
-/****** Object:  Job [Bet Bonus for Casino]    Script Date: 05-Apr-19 7:47:05 AM ******/
+/****** Object:  Job [Bet Bonus for Casino]    Script Date: 07-Apr-19 11:47:07 AM ******/
 BEGIN TRANSACTION
 DECLARE @ReturnCode INT
 SELECT @ReturnCode = 0
-/****** Object:  JobCategory [[Uncategorized (Local)]]    Script Date: 05-Apr-19 7:47:05 AM ******/
+/****** Object:  JobCategory [[Uncategorized (Local)]]    Script Date: 07-Apr-19 11:47:07 AM ******/
 IF NOT EXISTS (SELECT name FROM msdb.dbo.syscategories WHERE name=N'[Uncategorized (Local)]' AND category_class=1)
 BEGIN
 EXEC @ReturnCode = msdb.dbo.sp_add_category @class=N'JOB', @type=N'LOCAL', @name=N'[Uncategorized (Local)]'
@@ -21,13 +21,13 @@ EXEC @ReturnCode =  msdb.dbo.sp_add_job @job_name=N'Bet Bonus for Casino',
 		@notify_level_netsend=0, 
 		@notify_level_page=0, 
 		@delete_level=0, 
-		@description=N'No description available.', 
+		@description=N'checks once a day ar midnight the number of bets in the last 24 hours and if more than value of ''minBetAmntForBonus'' key in the Admin.utbl_CompanyDefinitions table, will insert a bonus of values ''betBonus'' from the Admin.utbl_CompanyDefinitions table to the Admin.utbl_transactions table for the given username.', 
 		@category_name=N'[Uncategorized (Local)]', 
 		@owner_login_name=N'DESKTOP-QPSKFM5\Ben Tovim', 
 		@notify_email_operator_name=N'AdminOp', @job_id = @jobId OUTPUT
 IF (@@ERROR <> 0 OR @ReturnCode <> 0) GOTO QuitWithRollback
-/****** Object:  Step [Check for over 1000]    Script Date: 05-Apr-19 7:47:06 AM ******/
-EXEC @ReturnCode = msdb.dbo.sp_add_jobstep @job_id=@jobId, @step_name=N'Check for over 1000', 
+/****** Object:  Step [Check for over minBetAmntForBonus]    Script Date: 07-Apr-19 11:47:07 AM ******/
+EXEC @ReturnCode = msdb.dbo.sp_add_jobstep @job_id=@jobId, @step_name=N'Check for over minBetAmntForBonus', 
 		@step_id=1, 
 		@cmdexec_success_code=0, 
 		@on_success_action=1, 
