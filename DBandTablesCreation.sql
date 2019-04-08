@@ -1,16 +1,26 @@
 /****** Object:  Database [Casino]    Script Date: 19-Mar-19 12:36:39 PM ******/
---CREATE DATABASE [Casino]
--- CONTAINMENT = NONE
--- ON  PRIMARY 
---( NAME = N'fgMaster', FILENAME = N'D:\CourseMaterials\eDate\eDate_new_Master.mdf' , SIZE = 8192KB , MAXSIZE = UNLIMITED, FILEGROWTH = 7168KB )
--- LOG ON 
---( NAME = N'Fg_log_Log', FILENAME = N'D:\CourseMaterials\eDate\eDate_new_Log.ldf' , SIZE = 5120KB , MAXSIZE = 2048GB , FILEGROWTH = 3072KB )
---GO
 USE master
-IF EXISTS(select * from sys.databases where name='yourDBname')
+IF EXISTS(select * from sys.databases where name='Casino')
 DROP DATABASE [Casino]
+declare @dataPath nvarchar(max)
+declare @logPath nvarchar(max)
+declare @sql nvarchar(max)
 
-CREATE DATABASE [Casino]
+set @dataPath = 'D:\CourseMaterials\eDate\eDate_new_Master.mdf'
+set @logPath = 'D:\CourseMaterials\eDate\eDate_new_Log.ldf'
+
+set @sql = 'CREATE DATABASE [Casino]
+			CONTAINMENT = NONE
+			ON  PRIMARY 
+			(NAME = ''fgMaster'', 
+			FILENAME = '''+ @dataPath+''' , SIZE = 8192KB , 
+			MAXSIZE = UNLIMITED, FILEGROWTH = 7168KB) 
+			LOG ON 
+			(NAME = ''Fg_log_Log'', FILENAME = '''+@logPath+''' , SIZE = 5120KB , 
+			MAXSIZE = 2048GB , FILEGROWTH = 3072KB)'
+print @sql
+exec (@sql)
+
 
 USE [Casino]
 GO
@@ -83,7 +93,7 @@ GO
 DROP TABLE IF EXISTS [Admin].[utbl_CompanyDefinitions]
 CREATE TABLE [Admin].[utbl_CompanyDefinitions](
 	[CompanyKey] [nvarchar](20) NOT NULL,
-	[CompanyValue] [nvarchar] (50) NOT NULL,
+	[CompanyValue] [nvarchar] (100) NOT NULL,
  CONSTRAINT [PK_utbl_CompanyDefinitions] PRIMARY KEY CLUSTERED 
 (
 	[CompanyKey] ASC
@@ -132,25 +142,55 @@ USE [Casino]
 GO
 
 /****** Object:  Table [dbo].[utbl_Games]    Script Date: 21-Mar-19 5:12:45 PM ******/
+--SET ANSI_NULLS ON
+--GO
+
+--SET QUOTED_IDENTIFIER ON
+--GO
+
+--DROP TABLE IF EXISTS [Games].[utbl_Games]
+--CREATE TABLE [Games].[utbl_Games](
+--	[ID] [int] IDENTITY(1,1) NOT NULL,
+--	[GameName] [nvarchar](50) NOT NULL,
+--	[UserName] usernameDt,
+--	[BetAmnt] transactionAmountDt,
+--	[NumWins] [int] NULL,
+--	[NumLosses] [int] NULL,
+--	[GameDate] [datetime] NULL,
+-- CONSTRAINT [PK_utbl_Games] PRIMARY KEY CLUSTERED 
+--(
+--	[ID] ASC
+--)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+--) ON [PRIMARY]
+--GO
+
 SET ANSI_NULLS ON
 GO
 
+DROP SECURITY POLICY IF EXISTS GamesPolicyFilter
+drop function IF EXISTS Security.udf_securitypredicate
+
+
+ALTER TABLE [Games].[utbl_Games] SET ( SYSTEM_VERSIONING = OFF )
+GO
+DROP TABLE IF EXISTS [Games].[utbl_Games]
+DROP TABLE IF EXISTS [Games].[utbl_GamesHistory]
 SET QUOTED_IDENTIFIER ON
 GO
-
-DROP TABLE IF EXISTS [Games].[utbl_Games]
 CREATE TABLE [Games].[utbl_Games](
 	[ID] [int] IDENTITY(1,1) NOT NULL,
-	[GameName] [nvarchar](50) NOT NULL,
-	[UserName] usernameDt,
-	[NumWins] [int] NULL,
-	[NumLosses] [int] NULL,
-	[GameDate] [datetime] NULL,
- CONSTRAINT [PK_utbl_Games] PRIMARY KEY CLUSTERED 
-(
-	[ID] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
-) ON [PRIMARY]
+	[gameName] [nvarchar](50) NOT NULL,
+	[userName] usernameDt,
+	[winNum] [int] NULL,
+	[lossNum] [int] NULL,
+	[roundNum] [int] NOT NULL,
+	[gameDate] [datetime] NULL,
+  CONSTRAINT ID_PK PRIMARY KEY (ID),
+    ValidFrom datetime2 GENERATED ALWAYS AS ROW START NOT NULL,
+    ValidTo datetime2 GENERATED ALWAYS AS ROW END NOT NULL,
+  PERIOD FOR SYSTEM_TIME (ValidFrom, ValidTo)) 
+  WITH (SYSTEM_VERSIONING = ON (HISTORY_TABLE = Games.utbl_GamesHistory, 
+  DATA_CONSISTENCY_CHECK = ON));
 GO
 
 USE [Casino]
@@ -203,7 +243,7 @@ DROP TABLE IF EXISTS [Admin].[utbl_ApplicationLog]
 CREATE TABLE [Admin].[utbl_ApplicationLog](
 	[id] [int] IDENTITY(1,1) NOT NULL,
 	[objectName] [nvarchar](50) NOT NULL,
-	[variables] [nvarchar](500) NOT NULL,
+	[variables] [nvarchar](500) NULL,
 	[comments] [nvarchar](500) NOT NULL,
 	[execTime] [datetime]
 ) ON [PRIMARY] 
@@ -240,7 +280,7 @@ CREATE TABLE [admin].[utbl_Players](
 	[IsBlocked] [nchar](1) NULL,
 	[LoginTime] [datetime] NULL,
 	[IsConnected] [nchar](1) NULL,
-  CONSTRAINT EMP_PK PRIMARY KEY (UserName),
+  CONSTRAINT PLR_PK PRIMARY KEY (UserName),
     ValidFrom datetime2 GENERATED ALWAYS AS ROW START NOT NULL,
     ValidTo datetime2 GENERATED ALWAYS AS ROW END NOT NULL,
   PERIOD FOR SYSTEM_TIME (ValidFrom, ValidTo)) 

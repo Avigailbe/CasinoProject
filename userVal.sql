@@ -15,9 +15,9 @@ create or alter proc usp_welcome
 as
 /*
 exec usp_welcome
-           @username			= 'Avigail22', 
-		   @Password			= '2syt23rD',  
-		   @Email				= 'avigail@gmail.com',
+           @username			= 'Avigail', 
+		   @Password			= '2yryt23rD',  
+		   @Email				= 'bentovim.avigail@gmail.com',
 		   @birthdate			= '2000-03-27 12:20:07.420', 
 		   @FirstName			= 'avigail', 
 		   @LastName			= 'ben', 
@@ -54,18 +54,32 @@ end
 
 go
 
---exec usp_welcome  'KARINA', 'a9gyfd9xFpd', 'barjonya@gmail.com', '2000-03-27 12:20:07.420', 'avigail', 'ben', 'Oranit', 'Israel', 'F','register'
---exec usp_welcome  'KARA', 'a9gyd9xFpd', 'baronya@gmail.com', '2000-03-27 12:20:07.420', 'avigail', 'ben', 'Oranit', 'Israel', 'F','register'
---exec usp_welcome  'Karina2', 'a9gyfdD9xpd', 'bar@gmail.com', '2000-03-27 12:20:07.420', 'avigail', 'ben', 'Oranit', 'Israel', 'F','register'
+exec usp_welcome  'KARINA', 'a9gyfd9xFpd', 'barjonya@gmail.com', '2000-03-27 12:20:07.420', 'avigail', 'ben', 'Oranit', 'Israel', 'F','register'
+exec usp_welcome  'KARA', 'a9gyd9xFpd', 'baronya@gmail.com', '2000-03-27 12:20:07.420', 'avigail', 'ben', 'Oranit', 'Israel', 'F','register'
+exec usp_welcome  'KARA', 'a9gyd9xFpd', 'baronya@gmail.com', '2000-03-27 12:20:07.420', 'avigail', 'ben', 'Oranit', 'Israel', 'F','login'
+
+exec usp_welcome  'Karina2', 'a9gyfdD9xpd', 'bar@gmail.com', '2000-03-27 12:20:07.420', 'avigail', 'ben', 'Oranit', 'Israel', 'F','register'
 --exec usp_welcome  'Avigail', '11223rD', 'bentovim.avigail@gmail.com', '2000-03-27 12:20:07.420', 'avigail', 'ben', 'Oranit', 'Israel', 'F','register'
---exec usp_welcome  'Avigail5', 'a9gyfd9xFpd', 'bentovim.avi@gmail.com', '2000-03-27 12:20:07.420', 'avigail', 'ben', 'Oranit', 'Israel', 'F','register'
---exec usp_welcome  'Avigail', 'rt45Dy', 'bentovim.avigail@gmail.com', '2000-03-27 12:20:07.420', 'avigail', 'ben', 'Oranit', 'Israel', 'F','login'
---exec usp_welcome  'Avi', '15g1223rD', 'bent.avigail@gmail.com', '2000-03-27 12:20:07.420', 'avigail', 'ben', 'Oranit', 'Israel', 'F','register'
---exec usp_welcome  'Avi', '15g1223rD', 'bent.avigail@gmail.com', '2000-03-27 12:20:07.420', 'avigail', 'ben', 'Oranit', 'Israel', 'F','login'
---exec usp_welcome  'Aviv', '15g223rD', 'ben.avigail@gmail.com', '2000-03-27 12:20:07.420', 'avigail', 'ben', 'Oranit', 'Israel', 'F','register'
---exec usp_welcome  'KAR', 'a9gyd9bPpd', 'barnya@gmail.com', '2000-03-27 12:20:07.420', 'avigail', 'ben', 'Oranit', 'Israel', 'F','register'
---exec usp_welcome  'KAR', 'a9gyd9bPpd', 'barnya@gmail.com', '2000-03-27 12:20:07.420', 'avigail', 'ben', 'Oranit', 'Israel', 'F','login'
---exec usp_welcome  'Avigail5', 'Ail56', 'bentovim.avi@gmail.com', '2000-03-27 12:20:07.420', 'avigail', 'ben', 'Oranit', 'Israel', 'F','login'
+exec usp_welcome  'Avigail5', 'a9gyfd9xFpd', 'bentovim.avi@gmail.com', '2000-03-27 12:20:07.420', 'avigail', 'ben', 'Oranit', 'Israel', 'F','register'
+exec usp_welcome  'Avigail', 'rt45Dy', 'bentovim.avigail@gmail.com', '2000-03-27 12:20:07.420', 'avigail', 'ben', 'Oranit', 'Israel', 'F','login'
+exec usp_welcome  'Avi', '15g1223rD', 'bent.avigail@gmail.com', '2000-03-27 12:20:07.420', 'avigail', 'ben', 'Oranit', 'Israel', 'F','register'
+exec usp_welcome  'Avi', '15g1223rD', 'bent.avigail@gmail.com', '2000-03-27 12:20:07.420', 'avigail', 'ben', 'Oranit', 'Israel', 'F','login'
+exec usp_welcome  'Aviv', '15g223rD', 'ben.avigail@gmail.com', '2000-03-27 12:20:07.420', 'avigail', 'ben', 'Oranit', 'Israel', 'F','register'
+exec usp_welcome  'KAR', 'a9gyd9bPpd', 'barnya@gmail.com', '2000-03-27 12:20:07.420', 'avigail', 'ben', 'Oranit', 'Israel', 'F','register'
+exec usp_welcome  'KAR', 'a9gyd9bPpd', 'barnya@gmail.com', '2000-03-27 12:20:07.420', 'avigail', 'ben', 'Oranit', 'Israel', 'F','login'
+exec usp_welcome  'Avigail5', 'Ail56', 'bentovim.avi@gmail.com', '2000-03-27 12:20:07.420', 'avigail', 'ben', 'Oranit', 'Israel', 'F','login'
+exec usp_welcome  'joel', 'a9gyp9bPpd', 'joa@gmail.com', '2000-03-27 12:20:07.420', 'joa', 'hana', 'Oranit', 'Israel', 'F','register'
+exec usp_welcome  'mark', 'a9gyp9bPpd', 'markm@gmail.com', '2000-03-27 12:20:07.420', 'mark', 'manny', 'Oranit', 'Israel', 'F','register'
+exec usp_welcome  'eoin', 'a9gyoyrbPpd', 'eoinb@gmail.com', '2000-03-27 12:20:07.420', 'eoin', 'bar', 'Oranit', 'Israel', 'F','register'
+exec usp_welcome  'elaine', 'a9gyoptrbPpd', 'elainec@gmail.com', '2000-03-27 12:20:07.420', 'elaine', 'cheka', 'Oranit', 'Israel', 'F','register'
+exec usp_welcome  'sharon', 'a9ghptrbPpd', 'sharons@gmail.com', '2000-03-27 12:20:07.420', 'sharon', 'saul', 'Oranit', 'Israel', 'F','register'
+exec usp_welcome  'mai', 'a9ghppobPpd', 'mai@gmail.com', '2000-03-27 12:20:07.420', 'mai', 'saul', 'Oranit', 'Israel', 'F','register'
+exec usp_welcome  'tanya', 'a9ghptrbPpd', 'tanyas@gmail.com', '2000-03-27 12:20:07.420', 'tanya', 'saul', 'Oranit', 'Israel', 'F','register'
+exec usp_welcome  'malie', 'a9ghptrbPpd', 'malies@gmail.com', '2000-03-27 12:20:07.420', 'malie', 'saul', 'Oranit', 'Ireland', 'F','register'
+exec usp_welcome  'rachel', 'a9ghptrbPpd', 'rachel@gmail.com', '2000-03-27 12:20:07.420', 'rachel', 'cohen', 'Oranit', 'Ireland', 'F','register'
+exec usp_welcome  'patty', 'a9ghptrbPpd', 'pattys@gmail.com', '2000-03-27 12:20:07.420', 'patty', 'sauley', 'Oranit', 'Ireland', 'F','register'
+exec usp_welcome  'harry', 'a9ghptrbPpd', 'harry@gmail.com', '2000-03-27 12:20:07.420', 'harry', 'hamster', 'Oranit', 'Ireland', 'F','register'
+exec usp_welcome  'malie', 'a9ghptrbPpd', 'malies@gmail.com', '2000-03-27 12:20:07.420', 'malie', 'saul', 'Oranit', 'Ireland', 'F','login'
 
 
 --drop proc usp_validate_playerDetails
@@ -178,7 +192,7 @@ begin
 		if ((select dbo.udf_PasswordSyntaxValid(@playerPassword, @username)) = 'Y')
 			begin				
 				set @variableString = '@username = '+@username+', @playerPassword = '+@playerPassword
-				exec usp_insertAppLog 'usp_validate_playerDetails', @variableString, 'Validating password. Checking is freqently used'	
+				exec usp_insertAppLog 'usp_validate_playerDetails', @variableString, 'Validating password. Checking if freqently used'	
 				--check if password exists in git password table
 				if ((select count(gitPassword) from utbl_GitPasswords 
 						where gitPassword = @playerPassword COLLATE SQL_Latin1_General_CP1_CS_AS)=0)
@@ -274,7 +288,7 @@ begin
 		exec usp_insertAppLog 'usp_validate_playerDetails', @variableString, 'New registration details are valid. Giving new player welcome bonus'	
 		set @adminBonus = (select cast(companyValue as int) from Admin.utbl_CompanyDefinitions where companyKey = 'welcomeBonus')
 		set @transactionType = 'Bonus'
-		exec usp_insertBankroll @username, @adminBonus, @transactionType 
+		exec usp_insertTransactions @username, @adminBonus, @transactionType 
 		
 
 	--	exec usp_Login @username, @PlayerPassword
@@ -303,8 +317,8 @@ create or alter proc usp_Login
 as
 /*
 exec usp_Login
-           @username			= 'Avigail22', 
-		   @playerPassword		= '2syt23rD'
+           @username			= 'Avigail5', 
+		   @playerPassword		= 'a9gyfd9xFp'
 */
 begin
     declare 
@@ -315,6 +329,7 @@ begin
 	@variableString		nvarchar(500),
 	@currentBankRoll	int
 
+	set @loginTime = (select getdate())
 	set @numFails = (select numFails from Admin.utbl_players where userName = @username)
 	set @adminNumTries = (select cast(companyValue as int) from Admin.utbl_CompanyDefinitions where companyKey = 'logonTimes')
 	set @variableString = '@username = '+@username+', @playerPassword = '+@playerPassword+', @numFails = '+(select cast(@numFails as nvarchar(50)) )
@@ -347,49 +362,50 @@ begin
 		begin
 			set @numFails = @numFails+1
 			set @variableString = '@username = '+@username+', @playerPassword = '+@playerPassword+', @numFails = '+(select cast(@numFails as nvarchar(50)) )
-							+', @adminNumTries = '+@adminNumTries
+							+', @adminNumTries = '+(select cast(@adminNumTries as nvarchar(50)) )
 			exec usp_insertAppLog 'usp_Login', @variableString, 'Wrong password for player. A fail has been added'	
 			--if exceeded number of allowed tries for password, send to support
 			if (@numFails = @adminNumTries)
-			begin
-				exec usp_insertAppLog 'usp_Login', @variableString, 'Exceeded amount of allowed fails. Player will be blocked'	
-				update Admin.utbl_players 
-				set isBlocked = 'Y',
-				isConnected = 'N',
-				numFails = @adminNumTries
-				where username=@username
-				print 'You have entered the wrong password too many times and are now blocked. 
-						Please contact support'
-				return
-			end  
+				begin
+					exec usp_insertAppLog 'usp_Login', @variableString, 'Exceeded amount of allowed fails. Player will be blocked'	
+					update Admin.utbl_players 
+					set isBlocked = 'Y',
+					isConnected = 'N',
+					numFails = @adminNumTries
+					where username=@username
+					print 'You have entered the wrong password too many times and are now blocked. 
+							Please contact support'
+					return
+				end  
 			else
-			begin
-				exec usp_insertAppLog 'usp_Login', @variableString, 'Amount of fails is updated in utbl_players table. Player should try to login again with different password'	
-				update Admin.utbl_players  set numFails = @numFails
-				where username =@username
-				print 'The password entered is invalid. Please try again'
-				--send back to Login GUI Screen 
-				return;
-			end
+				begin
+					exec usp_insertAppLog 'usp_Login', @variableString, 'Amount of fails is updated in utbl_players table. Player should try to login again with different password'	
+					update Admin.utbl_players  
+					set numFails = @numFails
+					where username =@username
+					print 'The password entered is invalid. Please try again'
+					--send back to Login GUI Screen 
+					return;
+				end
 		end
 		else
-		begin
-		--if login successful, change NumFails = 0 and connect player
-			exec usp_insertAppLog 'usp_Login', @variableString, 'Player has entered correct password and will be connected.'	
-			update Admin.utbl_players
-			set loginTime = getdate(), 
-			isConnected = 'Y', numFails = 0
-			where username=@username
-			exec usp_insertAppLog 'usp_Login', @variableString, 'Player is connected.'
+			begin
+			--if login successful, change NumFails = 0 and connect player
+				exec usp_insertAppLog 'usp_Login', @variableString, 'Player has entered correct password and will be connected.'	
+				update Admin.utbl_players
+				set loginTime = @loginTime, 
+				isConnected = 'Y', numFails = 0
+				where username=@username
+				exec usp_insertAppLog 'usp_Login', @variableString, 'Player is connected.'
 			
-			--send to lobby gui screen
-			set @currentBankRoll= (select [Admin].[udf_Bankroll](@username))
-			set @variableString = '@username = '+@username+', @currentBankRoll = '+(select cast(@currentBankRoll as nvarchar(50)) )
-			exec usp_insertAppLog 'usp_Login', @variableString, 'Player is connected and going to lobby.'
---**********for testing begin
-			--exec usp_lobby @username, 'games'
---**********for testing end
-		end
+				--send to lobby gui screen
+				set @currentBankRoll= (select [Admin].[udf_Bankroll](@username))
+				set @variableString = '@username = '+@username+', @currentBankRoll = '+(select cast(@currentBankRoll as nvarchar(50)) )
+				exec usp_insertAppLog 'usp_Login', @variableString, 'Player is connected and going to lobby.'
+	--**********for testing begin
+				--exec usp_lobby @username, 'games'
+	--**********for testing end
+			end
 	end
 END
 go
@@ -435,7 +451,8 @@ begin
 			exec usp_insertAppLog 'usp_autoPasswordChange', @variableString, 'Validating password. Calling udf_IsPasswordInPast and udf_PasswordSyntaxValid functions'	
 
 			if (((select dbo.udf_IsPasswordInPast(@username, @newPassword)) = 'Y') or
-				((select dbo.udf_PasswordSyntaxValid(@newPassword, @username )) = 'N'))
+				((select dbo.udf_PasswordSyntaxValid(@newPassword, @username )) = 'N') or
+				((select dbo.udf_PasswordExtValid (@newPassword)) = 'N'))
 				begin
 					set @variableString = '@username = '+@username+', @newPassword = '+@newPassword
 					exec usp_insertAppLog 'usp_autoPasswordChange', @variableString, 'New random password has been used or is frequent. Trying again'	
@@ -484,7 +501,7 @@ as
 select dbo.udf_IsPasswordInPast
 (
             'Avigail', 
-		   '11dfg3rD'
+		   'c5676vSi9B'
 )
 */
 begin
@@ -496,7 +513,9 @@ begin
 				and p.username = @username)>0) OR
 			((select count(GitPassword) from utbl_GitPasswords 
 				where gitPassword = @newPassword COLLATE SQL_Latin1_General_CP1_CS_AS)>0))
-			return ('Y')
+			begin
+				return ('Y')
+			end
 	return ('N')
 end
 
@@ -529,8 +548,9 @@ begin
 			and (@playerPassword not like N'%passwo%rd%')
 			and (@playerPassword not like N'%passwor%d%')
 			and (@playerPassword not like @username))
-			
-			return ('Y');
+			begin
+				return ('Y');
+			end
 	return ('N');
 end;
 
@@ -622,7 +642,7 @@ go
 
 --exec usp_admin 'Avigail', 'PersonalDetailsChange', 'barja@gmail.com', '2000-03-27 12:20:07.420', 'avigail', 'bent', 'Oranit', 'Israel', 'F',''
 --exec usp_admin 'Avigail', 'PersonalDetailsChange', 'avi@gmail.com', '2000-03-27 12:20:07.420', 'avigail', 'bent', 'Oranit', 'Israel', 'M',''
---exec usp_admin 'Avigail', 'passwordChange', '', '', '', '', '', '', '','avi9B'
+--exec usp_admin 'Avigail', 'passwordChange', '', '', '', '', '', '', '','c5676vSi9B'
 
 --Administration Office GUI Screen send output if PersonalDetailsChange or passwordChange
 --if PersonalDetailsChange gets input from Personal Details Change GUI Screen 
@@ -728,20 +748,23 @@ begin
 
 			--check validation of password
 			if (((select dbo.udf_IsPasswordInPast(@username,@newPassword)) = 'N') and 
-				((select dbo.udf_PasswordSyntaxValid (@newPassword,  @username)) = 'Y'))
-			begin
-				exec usp_insertAppLog 'usp_admin', @variableString, 'Password is valid. Updating Admin.utbl_players table.'	
-				--update player with new password
-				update Admin.utbl_players set playerPassword = @newPassword where username = @username
-			end
+				((select dbo.udf_PasswordSyntaxValid (@newPassword,  @username)) = 'Y') and
+				((select dbo.udf_PasswordExtValid (@newPassword)) = 'Y'))
+				begin
+					exec usp_insertAppLog 'usp_admin', @variableString, 'Password is valid. Updating Admin.utbl_players table.'	
+					--update player with new password
+					update Admin.utbl_players set playerPassword = @newPassword where username = @username
+				end
 			else
-				exec usp_insertAppLog 'usp_admin', @variableString, 'Password has failed validation and is invalid.'	
-				print 'The password you requested is not strong, has been used by you in the past or is frequently used. '+@NewLineChar+
-					'Please enter a new password with: '+@newLineChar+
-					'at least 5 characters long, '+@newLineChar+
-					'with a combination of at least 1 small letter, '+@newLineChar+
-					'1 capital letter, 1 digit'+@newLineChar+
-					'and not like the word password.'
+				begin
+					exec usp_insertAppLog 'usp_admin', @variableString, 'Password has failed validation and is invalid.'	
+					print 'The password you requested is not strong, has been used by you in the past or is frequently used. '+@NewLineChar+
+						'Please enter a new password with: '+@newLineChar+
+						'at least 5 characters long, '+@newLineChar+
+						'with a combination of at least 1 small letter, '+@newLineChar+
+						'1 capital letter, 1 digit'+@newLineChar+
+						'and not like the word password.'
+				end
 		end
 	else return
 end
@@ -754,7 +777,7 @@ create or alter proc usp_gameGround
 as
 /*
 exec usp_gameGround
-           @username			= 'Avigail22', 
+           @username			= 'eoin', 
 		   @gameRequest			= 'SlotMachine'	   
 */
 begin
@@ -780,8 +803,8 @@ end
 go
 
 
---exec usp_blackjack 'Avigail', 10, 4
---exec usp_blackjack 'Avigail', 20, 2
+--exec usp_blackjack 'Avigail', 5, 4
+--exec usp_blackjack 'Avigail', 30, 2
 --drop proc usp_blackjack
 --blackjack game
 --BlackJack GUI Screen called from the Game Forum GUI Screen 
@@ -791,8 +814,8 @@ create or alter proc usp_blackjack
 as
 /*
 exec usp_blackJack
-           @username			= 'Avigail', 
-		   @BetAmnt				= 1,
+           @username			= 'malie', 
+		   @BetAmnt				= 6,
 		   @numCards			= 2 		   
 */
 begin
@@ -822,7 +845,7 @@ begin
 		begin	
 			exec usp_insertAppLog 'usp_blackJack', @variableString, 'Inserting bet to utbl_bankroll table'
 			set @transactionType = 'Bet'
-			exec usp_insertBankroll 	@username, @BetAmnt, @transactionType
+			exec usp_insertTransactions 	@username, @BetAmnt, @transactionType
 
 			--populate card table
 			exec usp_insertAppLog 'usp_blackJack', @variableString, 'Calling on usp_CardTableFiller to fill card table'
@@ -856,8 +879,10 @@ begin
 				begin
 					set @isWin = 'N'
 					set @transactionType = 'Withdrawal'
-					exec usp_InsertBankroll @username, @BetAmnt, @transactionType
-					exec udf_updateGame @username, @isWin, @gameName 
+					exec usp_insertTransactions @username, @BetAmnt, @transactionType
+					set @transactionType = 'Loss'
+					exec usp_insertTransactions @username, @BetAmnt, @transactionType
+					exec udf_updateGame @username, @isWin, @gameName
 					print 'Player cards exceed 21, player looses'  
 					return; 
 					exec usp_insertAppLog 'usp_blackJack', @variableString, 'Sum for player cards is more than 21 in blackJack game. Player lost.'	
@@ -869,8 +894,10 @@ begin
 					begin
 						set @isWin = 'N'
 						set @transactionType = 'Withdrawal'
-						exec usp_InsertBankroll @username, @BetAmnt, @transactionType
-						exec udf_updateGame @username, @isWin, @gameName 
+						exec usp_insertTransactions @username, @BetAmnt, @transactionType
+						set @transactionType = 'Loss'
+						exec usp_insertTransactions @username, @BetAmnt, @transactionType
+						exec udf_updateGame @username, @isWin, @gameName
 						print 'Dealer has more than Player. Player looses'
 						exec usp_insertAppLog 'usp_blackJack', @variableString, 'Sum for player cards equal to dealer cards in blackJack game. Player lost.'	
 						return; 
@@ -896,8 +923,8 @@ begin
 					set @transactionType = 'Win'
 					--if wins, player gets bet amount*2 added on CurrentBankRoll from last transaction and WinAmt
 					set @BetAmnt = @BetAmnt + @BetAmnt
-					exec usp_insertBankroll	@username, @BetAmnt, @transactionType
-					exec udf_updateGame @username, @isWin, @gameName 
+					exec usp_insertTransactions	@username, @BetAmnt, @transactionType
+					exec udf_updateGame @username, @isWin, @gameName
 					print 'Player wins'
 					exec usp_insertAppLog 'usp_blackJack', @variableString, 'Sum for player cards is lower than 21 and dealer cards is more in blackJack game. Player won.'	
 					return; 
@@ -908,8 +935,10 @@ begin
 				begin
 					set @IsWin = 'N'
 					set @transactionType = 'Withdrawal'
-					exec usp_InsertBankroll @username, @BetAmnt, @transactionType
-					exec udf_updateGame @username, @isWin, @gameName 
+					exec usp_insertTransactions @username, @BetAmnt, @transactionType
+					exec udf_updateGame @username, @isWin, @gameName
+					set @transactionType = 'Loss'
+					exec usp_insertTransactions @username, @BetAmnt, @transactionType
 					print 'Dealer has more than Player. Player looses'
 					exec usp_insertAppLog 'usp_blackJack', @variableString, 'Sum for dealer cards is lower than 21 and higher than player cards in blackJack game. Player lost.'	
 					return; 
@@ -925,16 +954,11 @@ begin
 end
 
 go
---*************************TO DO
---create proc usp_gamesTableUpdate
---           @username nvarchar(50), @BetAmount int
---as
---begin
---    declare 
---end
-drop proc usp_slotMachine
 
-exec usp_slotMachine 'Avigail', 10
+
+--drop proc usp_slotMachine
+
+--exec usp_slotMachine 'Avigail', 10
 
 --slot machine game
 --Slot Machine GUI Screen called from the Game Forum GUI Screen 
@@ -945,8 +969,8 @@ create or alter proc usp_slotMachine
 as
 /*
 exec usp_slotMachine
-           @username			= 'Avigail11'	 ,  
-		   @BetAmnt			= 10
+           @username			= 'harry'	 ,  
+		   @BetAmnt			=8
 */
 begin
     declare 
@@ -969,7 +993,7 @@ begin
 		begin	
 			exec usp_insertAppLog 'usp_slotMachine', @variableString, 'Inserting bet to utbl_bankroll table'
 			set @transactionType = 'Bet'
-			exec usp_insertBankroll 	@username, @BetAmnt, @transactionType
+			exec usp_insertTransactions @username, @BetAmnt, @transactionType
 			--get symbols
 			set @wheel1Symbol = (SELECT TOP 1 Symbol FROM Reference.utbl_symboltable ORDER BY newid())
 			set @wheel2Symbol = (SELECT TOP 1 Symbol FROM Reference.utbl_symboltable ORDER BY newid())
@@ -985,8 +1009,8 @@ begin
 					set @transactionType = 'Win'
 					--if wins, player gets bet amount*2 added on CurrentBankRoll from last transaction and WinAmt
 					set @BetAmnt = @BetAmnt + @BetAmnt
-					exec usp_insertBankroll	@username, @BetAmnt, @transactionType
-					exec udf_updateGame @username, @isWin, @gameName 
+					exec usp_insertTransactions	@username, @BetAmnt, @transactionType
+					exec udf_updateGame @username, @isWin, @gameName
 				end
 			else 
 				begin
@@ -994,8 +1018,10 @@ begin
 					set @variableString = '@username = '+@username+',  @isWin = '+@isWin
 					exec usp_insertAppLog 'usp_slotMachine', @variableString, 'There is a loss for SlotMachine game. Inserting Withdrawal to utbl_bankroll table. End of game.'
 					set @transactionType = 'Withdrawal'
-					exec usp_InsertBankroll 	@username, @BetAmnt, @transactionType
-					exec udf_updateGame @username, @isWin, @gameName 
+					exec usp_insertTransactions 	@username, @BetAmnt, @transactionType
+					set @transactionType = 'Loss'
+					exec usp_insertTransactions @username, @BetAmnt, @transactionType
+					exec udf_updateGame @username, @isWin, @gameName
 				end
 			--exec udf_UpdateBankroll @username, @BetAmount, @IsWin
 			--exec usp_gamesTableUpdate
@@ -1009,14 +1035,14 @@ begin
 end
 
 go
-----procedure to update utbl_BankRoll table 
-create or alter proc usp_insertBankroll 
+----procedure to update utbl_Transactions table 
+create or alter proc usp_insertTransactions 
 		@username usernameDt, @transactionAmount transactionAmountDt, @transactionType transactionTypeDt
 as
 /*
-exec usp_insertBankroll
-           @username			= 'Kar',
-		   @transactionAmount	= 100,
+exec usp_insertTransactions
+           @username			= 'tanya',
+		   @transactionAmount	= 10,
 		   @transactionType		= 'Deposit'	   
 */
 begin
@@ -1044,68 +1070,91 @@ create or alter proc udf_updateGame
 as
 /*
 exec udf_updateGame
-           @username			= 'Avigail',
+           @username			= 'eoin',
 		   @isWin				= 'Y',
-		   @gameName			= 'slotMachine'	   
+		   @gameName			= 'blackjack'	
 */
 begin
     declare 
 	@gameDate				datetime,
-	@numWins				int,
-	@numLosses				int,
+	@winNum					int,
+	@lossNum				int,
+	@roundNum				int,
+	@todayDay				int,
+	@loginDay				int,
 	@variableString			nvarchar(500)
 
 	set @variableString = '@username = '+@username+', @isWin = '+ @isWin+', @gameName = '+@gameName
 	exec usp_insertAppLog 'udf_updateGame', @variableString, 'Start of procedure. Checking if win or loss. '
-	set @gameDate = getdate()
+	set @gameDate = (select getdate())
+	set @todayDay = (select (datepart(dd,@gameDate)))
+	set @loginDay = (select datepart(dd,logintime) from admin.utbl_players where username = @username)
+
+	if ((select count(roundNum) from Games.utbl_Games where username = @username and gameName = @gameName) =0)
+	begin
+		set @roundNum = 1
+	end
+	--keep track of number of todays rounds
+	else if ((@todayDay - @loginDay) =0)
+		begin
+			set @roundNum = (select roundNum from Games.utbl_Games where username = @username and gameName = @gameName)
+			set @roundNum = @roundNum +1
+		end
+	else
+		begin
+			set @roundNum = 1
+		end
+
 
 	if (@IsWin = 'Y')
 		begin			
 			if ((select count(*) from Games.utbl_Games where username = @username and gameName = @gameName) > 0)
 				begin
-					set @numWins = (select NumWins from Games.utbl_Games where username = @username and gameName = @gameName)
-					set @numWins = @numWins +1	
+					set @winNum = (select winNum from Games.utbl_Games where username = @username and gameName = @gameName)
+					set @winNum = @winNum +1	
 					update Games.utbl_Games
-						set NumWins = @numWins
+						set winNum = @winNum,
+						roundNum =@roundNum
 						where username = @username 
 						and gameName = @gameName
 					set @variableString = '@username = '+@username+', @isWin = '+ @isWin+', @gameName = '+@gameName+', 
-											@numWins = '+(select cast(@numWins as varchar(10)))
+											@winNum = '+(select cast(@winNum as varchar(10)))
 					exec usp_insertAppLog 'udf_updateGame', @variableString, 'Updating number of wins for user in utbl_Games. '
 				end
 			else
 				begin
-					set @numWins = 1
-					set @numLosses = 0	
-					insert into Games.utbl_Games (GameName, UserName, NumWins, NumLosses, GameDate)
-						values (@gameName, @username, 1, 0, @gameDate)
-					set @variableString = '@username = '+@username+', @isWin = '+ @isWin+', @gameName = '+@gameName+', @numWins = '+(select cast(@numWins as varchar(10)))
+					set @winNum = 1
+					set @lossNum = 0	
+					insert into Games.utbl_Games (GameName, UserName, winNum, lossNum, roundNum, GameDate)
+						values (@gameName, @username, @winNum, @lossNum, @roundNum, @gameDate)
+					set @variableString = '@username = '+@username+', @isWin = '+ @isWin+', @gameName = '+@gameName+', @winNum = '+(select cast(@winNum as varchar(10)))
 					exec usp_insertAppLog 'udf_updateGame', @variableString, 'Inserting win for user to utbl_Games. '
 				end
-			end
-	 if (@IsWin = 'N')
+		end
+	 else if (@IsWin = 'N')
 		begin
 			if ((select count(*) from Games.utbl_Games where username = @username and gameName = @gameName) > 0)
 				begin
-					set @numLosses = (select numLosses from Games.utbl_Games where username = @username and gameName = @gameName)
-					set @numLosses = @numLosses +1	
+					set @lossNum = (select lossNum from Games.utbl_Games where username = @username and gameName = @gameName)
+					set @lossNum = @lossNum +1	
 					update Games.utbl_Games
-						set numLosses = @numLosses
+						set lossNum = @lossNum,
+						roundNum =@roundNum
 						where username = @username 
 						and gameName = @gameName
 					set @variableString = '@username = '+@username+', @isWin = '+ @isWin+', @gameName = '+
-											@gameName+', @numLosses = '+(select cast(@numLosses as varchar(10)))
+											@gameName+', @lossNum = '+(select cast(@lossNum as varchar(10)))
 					exec usp_insertAppLog 'udf_updateGame', @variableString, 'Updating number of losses for user in utbl_Games. '
 
 				end
 			else
 				begin
-					set @numLosses = 1
-					set @numWins = 0	
-					insert into Games.utbl_Games (GameName, UserName, NumWins, NumLosses, GameDate)
-						values (@gameName, @username, 1, 0, @gameDate)
+					set @lossNum = 1
+					set @winNum = 0	
+					insert into Games.utbl_Games (GameName, UserName, winNum, lossNum, roundNum, gameDate)
+						values (@gameName, @username, @winNum, @lossNum, @roundNum, @gameDate)
 					set @variableString = '@username = '+@username+', @isWin = '+ @isWin+', @gameName = '+
-											@gameName+', @numLosses = '+(select cast(@numLosses as varchar(10)))
+											@gameName+', @lossNum = '+(select cast(@lossNum as varchar(10)))
 					exec usp_insertAppLog 'udf_updateGame', @variableString, 'Inserting loss for user to utbl_Games. '
 				end
 		end
@@ -1193,14 +1242,6 @@ end
 
 --drop proc usp_CompanyDefinitions
 
-exec usp_CompanyDefinitions 'insert', 'welcomeBonus', '10'
-exec usp_CompanyDefinitions 'insert', 'logonTimes', '5'
-exec usp_CompanyDefinitions 'insert', 'betBonus', '50'
-exec usp_CompanyDefinitions 'insert', 'MinimumAge', '18'
-exec usp_CompanyDefinitions 'insert', 'maxDepositAmnt', '1000'
-exec usp_CompanyDefinitions 'insert', 'minBetAmntForBonus', '1000'
-exec usp_CompanyDefinitions 'insert', 'creditCardDigitAmnt', '16'
-exec usp_CompanyDefinitions 'insert', 'adminMailAddress', 'bentovim.avigail@gmail.com'
 
 create or alter proc usp_CompanyDefinitions @action nvarchar(20), @companyKey nvarchar(20), @companyValue nvarchar(50)
 as
@@ -1312,21 +1353,21 @@ select admin.udf_Bankroll
 */
 BEGIN
 	-- Declare the return variable here
-	DECLARE @Bankroll	FLOAT = 0,
-			@Deposit	FLOAT = 0,
-			@Withdrowal FLOAT = 0,
-			@Bet		FLOAT = 0,
-			@Win		FLOAT = 0,
-			@Bonus		FLOAT = 0
+	DECLARE @bankroll	FLOAT = 0,
+			@deposit	FLOAT = 0,
+			@withdrawal FLOAT = 0,
+			@bet		FLOAT = 0,
+			@win		FLOAT = 0,
+			@bonus		FLOAT = 0
 
 	-- Add the T-SQL statements to compute the return value here
-	SELECT @Deposit = ISNULL(SUM(transactionAmount),0) from [Admin].utbl_transactions where [transactionType] = 'Deposit' and username = @userName
-	SELECT @Withdrowal = ISNULL(SUM(transactionAmount),0) from [Admin].utbl_transactions where [transactionType] = 'Withdrawal' and username = @userName
-	SELECT @Bet = ISNULL(SUM(transactionAmount),0) from [Admin].utbl_transactions where [transactionType] = 'Bet' and username = @userName
-	SELECT @Win = ISNULL(SUM(transactionAmount),0) from [Admin].utbl_transactions where [transactionType] = 'Win' and username = @userName
-	SELECT @Bonus = ISNULL(SUM(transactionAmount),0) from [Admin].utbl_transactions where [transactionType] = 'Bonus' and username = @userName
+	SELECT @deposit = ISNULL(SUM(transactionAmount),0) from [Admin].utbl_transactions where [transactionType] = 'Deposit' and username = @userName
+	SELECT @withdrawal = ISNULL(SUM(transactionAmount),0) from [Admin].utbl_transactions where [transactionType] = 'Withdrawal' and username = @userName
+	SELECT @bet = ISNULL(SUM(transactionAmount),0) from [Admin].utbl_transactions where [transactionType] = 'Bet' and username = @userName
+	SELECT @win = ISNULL(SUM(transactionAmount),0) from [Admin].utbl_transactions where [transactionType] = 'Win' and username = @userName
+	SELECT @bonus = ISNULL(SUM(transactionAmount),0) from [Admin].utbl_transactions where [transactionType] = 'Bonus' and username = @userName
 
-	select @Bankroll = @Deposit - @Withdrowal - @Bet + @Win + @Bonus
+	select @bankroll = @deposit - @withdrowal - @bet + @win + @bonus
 
 	-- Return the result of the function
 	
