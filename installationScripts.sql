@@ -96,25 +96,31 @@ begin
 	@username						usernameDt,
 	@adminBetBonus					int,
 	@adminMinBetAmntForBonus		int
-
-
+	
 	set @transDate = getdate()
 	set @adminBetBonus = (select cast(companyValue as int) from Admin.utbl_CompanyDefinitions where companyKey = 'betBonus')
 	set @adminMinBetAmntForBonus = (select cast(companyValue as int) from Admin.utbl_CompanyDefinitions where companyKey = 'minBetAmntForBonus')
-	set @username = (select distinct out.username 
-					from Admin.utbl_transatioms out, (select sum(transactionAmount) as totalBet, username
-								from Admin.utbl_Bankroll
+
+	declare Mycursor				cursor
+		for select distinct out.username 
+					from Admin.utbl_transactions out, (select sum(transactionAmount) as totalBet, username
+								from Admin.utbl_transactions
 								where transactionType = 'Bet'
 								and transDate  >= DateAdd(hh, -24, GETDATE())
 								group by username) inn
 					where out.username = inn.username
 					and  transactionType = 'Bet'
-					and inn.totalBet >@adminMinBetAmntForBonus)
-
-
-	insert into Admin.utbl_transatioms (transactionType, transactionAmount, username, transDate)
-			values ('Bonus', @adminBetBonus, @username, @transDate);
-
+					and inn.totalBet >@adminMinBetAmntForBonus
+		open Mycursor
+		Fetch next from Mycursor into @username
+		while @@FETCH_STATUS=0
+			begin 
+				insert into Admin.utbl_transactions (transactionType, transactionAmount, username, transDate)
+						values ('Bonus', @adminBetBonus, @username, @transDate);
+				Fetch next from Mycursor into @username
+			end 
+		close Mycursor
+		Deallocate Mycursor
 end
 
 
@@ -127,21 +133,23 @@ exec usp_connectionsCheck
 */
 begin
 	declare 
-	@amount				int,
-	@adminMailAddress	emailAddressDt,
-	@mailSubject		nvarchar(100),
-	@mailBody			nvarchar(200)
+	@amount					int,
+	@adminMailAddress		emailAddressDt,
+	@adminNumConnections	int,
+	@mailSubject			nvarchar(100),
+	@mailBody				nvarchar(200)
 
-	set @adminMailAddress = (select cast(companyValue as int) from Admin.utbl_CompanyDefinitions where companyKey = 'adminMailAddress')
+	set @adminMailAddress = (select companyValue from Admin.utbl_CompanyDefinitions where companyKey = 'adminMailAddress')
+	set @adminNumConnections = (select cast(companyValue as int) from Admin.utbl_CompanyDefinitions where companyKey = 'numConnectionsAlert')
 	set @amount = (select count(*)
-	from admin.utbl_Players
-	where IsConnected = 'Y') 
+					from admin.utbl_Players
+					where IsConnected = 'Y') 
 
-	if(@amount >100)
+	if(@amount > @adminNumConnections)
 	begin
 		--send mail notification of connection amount
 		set @mailSubject = 'Number of connections'
-		set @mailBody = 'The number of connection are > 100 at the moment'
+		set @mailBody = 'The number of connections are higher than '+cast(@adminNumConnections as varchar)+' at the moment'
 		exec msdb.dbo.sp_send_dbmail 
 							@profile_name = 'Casino Support Team',
 							@recipients=@adminMailAddress,
@@ -150,6 +158,44 @@ begin
 	end
 end
 	
+
+	--connections check procedure for connections>100 Casino job
+--drop proc usp_noNewLogins
+create or alter proc usp_noNewLogins 		
+as
+/*
+exec usp_noNewLogins
+*/
+begin
+	declare 
+	@lastLoginTime			datetime,
+	@adminMailAddress		emailAddressDt,
+	@adminNumMins			int,
+	@numMinsLastLogin		int,
+	@mailSubject			nvarchar(100),
+	@mailBody				nvarchar(200)
+
+	set @adminMailAddress = (select companyValue from Admin.utbl_CompanyDefinitions where companyKey = 'adminMailAddress')
+	set @adminNumMins = (select cast(companyValue as int) from Admin.utbl_CompanyDefinitions where companyKey = 'numMinsNoLoginsAlert')
+	set @lastLoginTime = (select max(logintime)
+							from admin.utbl_Players
+							where IsConnected = 'Y') 
+
+	set @numMinsLastLogin = ((select datepart(minute, @lastLoginTime)) - (select datepart(minute, getdate())))
+
+	if(@numMinsLastLogin >= @adminNumMins)
+	begin
+		--send mail notification of connection amount
+		set @mailSubject = 'Number of logins'
+		set @mailBody = 'No new logins were made in the last '+cast(@adminNumMins as varchar)+' minutes'
+		exec msdb.dbo.sp_send_dbmail 
+							@profile_name = 'Casino Support Team',
+							@recipients=@adminMailAddress,
+							@subject=@mailSubject,
+							@body=@mailBody
+	end
+end
+
 
 
 Copy
@@ -175,3 +221,75 @@ ADD ( INSERT, UPDATE, DELETE
      ON DATABASE::Casino BY PUBLIC )  
 WITH (STATE = ON) ;    
 GO  
+
+
+create or alter proc usp_createFullBackup 	
+as
+/*
+exec usp_createFullBackup
+*/
+begin
+	declare 
+	@fullBackupDest				nvarchar(100),
+	@fullBackupName				nvarchar(100),
+	@fullBackupDescrb			nvarchar(100),
+	@stmt						nvarchar(4000)
+
+	set @fullBackupDest = (select companyValue from Admin.utbl_CompanyDefinitions where companyKey = 'fullBackupDest')
+	set @fullBackupName = (select companyValue from Admin.utbl_CompanyDefinitions where companyKey = 'fullBackupName')
+	set @fullBackupDescrb = (select companyValue from Admin.utbl_CompanyDefinitions where companyKey = 'fullBackupDescrb')
+
+	set @stmt = 'BACKUP DATABASE casino TO DISK= '''+@fullBackupDest+'''' +
+						' WITH CHECKSUM,
+						name = '''+@fullBackupName+''', description = '''+@fullBackupDescrb+''', stats = 10 '
+	print @stmt
+	exec (@stmt)
+
+end
+
+create or alter proc usp_createDiffBackup 	
+as
+/*
+exec usp_createDiffBackup
+*/
+begin
+	declare 
+	@diffBackupDest				nvarchar(100),
+	@diffBackupName				nvarchar(100),
+	@diffBackupDescrb			nvarchar(100),
+	@stmt						nvarchar(4000)
+
+	set @diffBackupDest = (select companyValue from Admin.utbl_CompanyDefinitions where companyKey = 'diffBackupDest')
+	set @diffBackupName = (select companyValue from Admin.utbl_CompanyDefinitions where companyKey = 'diffBackupName')
+	set @diffBackupDescrb = (select companyValue from Admin.utbl_CompanyDefinitions where companyKey = 'diffBackupDescrb')
+
+	set @stmt = 'BACKUP DATABASE casino TO DISK= '''+@diffBackupDest+'''' +
+						' WITH Differential,
+						name = '''+@diffBackupName+''', description = '''+@diffBackupDescrb+''', stats = 10 '
+	print @stmt
+	exec (@stmt)
+
+end
+
+create or alter proc usp_createLogBackup 	
+as
+/*
+exec usp_createLogBackup
+*/
+begin
+	declare 
+	@logBackupDest				nvarchar(100),
+	@logBackupName				nvarchar(100),
+	@logBackupDescrb			nvarchar(100),
+	@stmt						nvarchar(4000)
+
+	set @logBackupDest = (select companyValue from Admin.utbl_CompanyDefinitions where companyKey = 'logBackupDest')
+	set @logBackupName = (select companyValue from Admin.utbl_CompanyDefinitions where companyKey = 'logBackupName')
+	set @logBackupDescrb = (select companyValue from Admin.utbl_CompanyDefinitions where companyKey = 'logBackupDescrb')
+
+	set @stmt = 'BACKUP log casino TO DISK= '''+@logBackupDest+'''' +
+					' WITH name = '''+@logBackupName+''', description = '''+@logBackupDescrb+''', stats = 10 '
+	print @stmt
+	exec (@stmt)
+
+end
