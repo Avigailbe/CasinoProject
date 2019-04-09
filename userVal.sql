@@ -814,7 +814,7 @@ create or alter proc usp_blackjack
 as
 /*
 exec usp_blackJack
-           @username			= 'malie', 
+           @username			= 'tanya', 
 		   @BetAmnt				= 6,
 		   @numCards			= 2 		   
 */
@@ -832,6 +832,8 @@ begin
 	@transactionType			transactionTypeDt,
 	@gameName					gameNameDt			=	'blackjack',
 	@currentBankRoll			int,
+	@transactionIdOutput		int,
+	@transactionId				int,
 
 	@variableString				nvarchar(500)
 
@@ -845,7 +847,10 @@ begin
 		begin	
 			exec usp_insertAppLog 'usp_blackJack', @variableString, 'Inserting bet to utbl_bankroll table'
 			set @transactionType = 'Bet'
-			exec usp_insertTransactions 	@username, @BetAmnt, @transactionType
+			exec usp_insertTransactions @username, @BetAmnt, @transactionType, @transactionIdOutput output
+			set @isWin = 'B'
+			set @transactionId = (SELECT @transactionIdOutput)
+			exec udf_updateGame @username, @isWin, @gameName, @transactionId
 
 			--populate card table
 			exec usp_insertAppLog 'usp_blackJack', @variableString, 'Calling on usp_CardTableFiller to fill card table'
@@ -879,10 +884,11 @@ begin
 				begin
 					set @isWin = 'N'
 					set @transactionType = 'Withdrawal'
-					exec usp_insertTransactions @username, @BetAmnt, @transactionType
+					exec usp_insertTransactions @username, @BetAmnt, @transactionType, @transactionIdOutput output
 					set @transactionType = 'Loss'
-					exec usp_insertTransactions @username, @BetAmnt, @transactionType
-					exec udf_updateGame @username, @isWin, @gameName
+					exec usp_insertTransactions @username, @BetAmnt, @transactionType, @transactionIdOutput output
+					set @transactionId = (SELECT @transactionIdOutput)
+					exec udf_updateGame @username, @isWin, @gameName, @transactionId
 					print 'Player cards exceed 21, player looses'  
 					return; 
 					exec usp_insertAppLog 'usp_blackJack', @variableString, 'Sum for player cards is more than 21 in blackJack game. Player lost.'	
@@ -894,10 +900,11 @@ begin
 					begin
 						set @isWin = 'N'
 						set @transactionType = 'Withdrawal'
-						exec usp_insertTransactions @username, @BetAmnt, @transactionType
+						exec usp_insertTransactions @username, @BetAmnt, @transactionType, @transactionIdOutput output
 						set @transactionType = 'Loss'
-						exec usp_insertTransactions @username, @BetAmnt, @transactionType
-						exec udf_updateGame @username, @isWin, @gameName
+						exec usp_insertTransactions @username, @BetAmnt, @transactionType, @transactionIdOutput output
+						set @transactionId = (SELECT @transactionIdOutput)
+						exec udf_updateGame @username, @isWin, @gameName, @transactionId
 						print 'Dealer has more than Player. Player looses'
 						exec usp_insertAppLog 'usp_blackJack', @variableString, 'Sum for player cards equal to dealer cards in blackJack game. Player lost.'	
 						return; 
@@ -923,8 +930,9 @@ begin
 					set @transactionType = 'Win'
 					--if wins, player gets bet amount*2 added on CurrentBankRoll from last transaction and WinAmt
 					set @BetAmnt = @BetAmnt + @BetAmnt
-					exec usp_insertTransactions	@username, @BetAmnt, @transactionType
-					exec udf_updateGame @username, @isWin, @gameName
+					exec usp_insertTransactions	@username, @BetAmnt, @transactionType, @transactionIdOutput output
+					set @transactionId = (SELECT @transactionIdOutput)
+					exec udf_updateGame @username, @isWin, @gameName, @transactionId
 					print 'Player wins'
 					exec usp_insertAppLog 'usp_blackJack', @variableString, 'Sum for player cards is lower than 21 and dealer cards is more in blackJack game. Player won.'	
 					return; 
@@ -935,10 +943,11 @@ begin
 				begin
 					set @IsWin = 'N'
 					set @transactionType = 'Withdrawal'
-					exec usp_insertTransactions @username, @BetAmnt, @transactionType
-					exec udf_updateGame @username, @isWin, @gameName
+					exec usp_insertTransactions @username, @BetAmnt, @transactionType, @transactionIdOutput output
+					set @transactionId = (SELECT @transactionIdOutput)
+					exec udf_updateGame @username, @isWin, @gameName, @transactionId
 					set @transactionType = 'Loss'
-					exec usp_insertTransactions @username, @BetAmnt, @transactionType
+					exec usp_insertTransactions @username, @BetAmnt, @transactionType, @transactionIdOutput output
 					print 'Dealer has more than Player. Player looses'
 					exec usp_insertAppLog 'usp_blackJack', @variableString, 'Sum for dealer cards is lower than 21 and higher than player cards in blackJack game. Player lost.'	
 					return; 
@@ -969,7 +978,7 @@ create or alter proc usp_slotMachine
 as
 /*
 exec usp_slotMachine
-           @username			= 'harry'	 ,  
+           @username			= 'tanya'	 ,  
 		   @BetAmnt			=8
 */
 begin
@@ -981,6 +990,8 @@ begin
 	@transactionType		transactionTypeDt,
 	@gameName				gameNameDt			 = 'slotMachine',
 	@currentBankRoll		float,
+	@transactionId			int,
+	@transactionIdOutput	int,
 	@variableString			nvarchar(500)
 
 	set @variableString = '@username = '+@username+', @BetAmnt = '+ (select CONVERT (VARCHAR(50), @BetAmnt,3))
@@ -993,7 +1004,10 @@ begin
 		begin	
 			exec usp_insertAppLog 'usp_slotMachine', @variableString, 'Inserting bet to utbl_bankroll table'
 			set @transactionType = 'Bet'
-			exec usp_insertTransactions @username, @BetAmnt, @transactionType
+			exec usp_insertTransactions	@username, @BetAmnt, @transactionType, @transactionIdOutput output
+			set @isWin = 'B'
+			set @transactionId = (SELECT @transactionIdOutput)
+			exec udf_updateGame @username, @isWin, @gameName, @transactionId
 			--get symbols
 			set @wheel1Symbol = (SELECT TOP 1 Symbol FROM Reference.utbl_symboltable ORDER BY newid())
 			set @wheel2Symbol = (SELECT TOP 1 Symbol FROM Reference.utbl_symboltable ORDER BY newid())
@@ -1009,8 +1023,9 @@ begin
 					set @transactionType = 'Win'
 					--if wins, player gets bet amount*2 added on CurrentBankRoll from last transaction and WinAmt
 					set @BetAmnt = @BetAmnt + @BetAmnt
-					exec usp_insertTransactions	@username, @BetAmnt, @transactionType
-					exec udf_updateGame @username, @isWin, @gameName
+					exec usp_insertTransactions	@username, @BetAmnt, @transactionType, @transactionIdOutput output
+					set @transactionId = (SELECT @transactionIdOutput)
+					exec udf_updateGame @username, @isWin, @gameName, @transactionId
 				end
 			else 
 				begin
@@ -1018,10 +1033,11 @@ begin
 					set @variableString = '@username = '+@username+',  @isWin = '+@isWin
 					exec usp_insertAppLog 'usp_slotMachine', @variableString, 'There is a loss for SlotMachine game. Inserting Withdrawal to utbl_bankroll table. End of game.'
 					set @transactionType = 'Withdrawal'
-					exec usp_insertTransactions 	@username, @BetAmnt, @transactionType
+					exec usp_insertTransactions 	@username, @BetAmnt, @transactionType, @transactionIdOutput output
 					set @transactionType = 'Loss'
-					exec usp_insertTransactions @username, @BetAmnt, @transactionType
-					exec udf_updateGame @username, @isWin, @gameName
+					exec usp_insertTransactions @username, @BetAmnt, @transactionType, @transactionIdOutput output
+					set @transactionId = (SELECT @transactionIdOutput)
+					exec udf_updateGame @username, @isWin, @gameName, @transactionId
 				end
 			--exec udf_UpdateBankroll @username, @BetAmount, @IsWin
 			--exec usp_gamesTableUpdate
@@ -1037,13 +1053,15 @@ end
 go
 ----procedure to update utbl_Transactions table 
 create or alter proc usp_insertTransactions 
-		@username usernameDt, @transactionAmount transactionAmountDt, @transactionType transactionTypeDt
+		@username usernameDt, @transactionAmount transactionAmountDt, @transactionType transactionTypeDt,
+		@transactionIdOutput int output
 as
 /*
 exec usp_insertTransactions
            @username			= 'tanya',
-		   @transactionAmount	= 10,
-		   @transactionType		= 'Deposit'	   
+		   @transactionAmount	= 100,
+		   @transactionType		= 'Deposit',	   
+		   @transactionIdOutput =  1
 */
 begin
     declare 
@@ -1057,7 +1075,8 @@ begin
 	
 	insert into Admin.utbl_transactions (transactionType, transactionAmount, username, transDate)
 			values (@transactionType, @transactionAmount, @username, @transDate)
-
+	
+	set @transactionIdOutput = (SELECT SCOPE_IDENTITY())
 	exec usp_insertAppLog 'udf_insertBankroll', @variableString, 'After insert into utbl_transactions'
 
 end
@@ -1066,7 +1085,7 @@ end
 
 ----procedure to update utbl_Games table 
 create or alter proc udf_updateGame
-		@username usernameDt, @isWin nvarchar(1), @gameName gameNameDt
+		@username usernameDt, @isWin nvarchar(1), @gameName gameNameDt, @transactionId int
 as
 /*
 exec udf_updateGame
@@ -1091,9 +1110,9 @@ begin
 	set @loginDay = (select datepart(dd,logintime) from admin.utbl_players where username = @username)
 
 	if ((select count(roundNum) from Games.utbl_Games where username = @username and gameName = @gameName) =0)
-	begin
-		set @roundNum = 1
-	end
+		begin
+			set @roundNum = 1
+		end
 	--keep track of number of todays rounds
 	else if ((@todayDay - @loginDay) =0)
 		begin
@@ -1114,6 +1133,7 @@ begin
 					set @winNum = @winNum +1	
 					update Games.utbl_Games
 						set winNum = @winNum,
+						transactionId = @transactionId,
 						roundNum =@roundNum
 						where username = @username 
 						and gameName = @gameName
@@ -1125,8 +1145,8 @@ begin
 				begin
 					set @winNum = 1
 					set @lossNum = 0	
-					insert into Games.utbl_Games (GameName, UserName, winNum, lossNum, roundNum, GameDate)
-						values (@gameName, @username, @winNum, @lossNum, @roundNum, @gameDate)
+					insert into Games.utbl_Games (GameName, UserName, winNum, lossNum, roundNum, GameDate, transactionId)
+						values (@gameName, @username, @winNum, @lossNum, @roundNum, @gameDate, @transactionId)
 					set @variableString = '@username = '+@username+', @isWin = '+ @isWin+', @gameName = '+@gameName+', @winNum = '+(select cast(@winNum as varchar(10)))
 					exec usp_insertAppLog 'udf_updateGame', @variableString, 'Inserting win for user to utbl_Games. '
 				end
@@ -1139,6 +1159,7 @@ begin
 					set @lossNum = @lossNum +1	
 					update Games.utbl_Games
 						set lossNum = @lossNum,
+						transactionId = @transactionId,
 						roundNum =@roundNum
 						where username = @username 
 						and gameName = @gameName
@@ -1151,13 +1172,43 @@ begin
 				begin
 					set @lossNum = 1
 					set @winNum = 0	
-					insert into Games.utbl_Games (GameName, UserName, winNum, lossNum, roundNum, gameDate)
-						values (@gameName, @username, @winNum, @lossNum, @roundNum, @gameDate)
+					insert into Games.utbl_Games (GameName, UserName, winNum, lossNum, roundNum, gameDate, transactionId)
+						values (@gameName, @username, @winNum, @lossNum, @roundNum, @gameDate, @transactionId)
 					set @variableString = '@username = '+@username+', @isWin = '+ @isWin+', @gameName = '+
 											@gameName+', @lossNum = '+(select cast(@lossNum as varchar(10)))
 					exec usp_insertAppLog 'udf_updateGame', @variableString, 'Inserting loss for user to utbl_Games. '
 				end
-		end
+			end
+		else if (@IsWin = 'B')
+			begin
+				set @roundNum = 0
+				if ((select count(*) from Games.utbl_Games where username = @username and gameName = @gameName) > 0)
+					begin
+						set @lossNum = 0
+						set @winNum = 0	
+						update Games.utbl_Games
+							set lossNum = @lossNum,
+							winNum = @winNum,
+							transactionId = @transactionId,
+							roundNum =@roundNum
+							where username = @username 
+							and gameName = @gameName
+						set @variableString = '@username = '+@username+', @isWin = '+ @isWin+', @gameName = '+@gameName
+						exec usp_insertAppLog 'udf_updateGame', @variableString, 'Updating utbl_Games for new bet for user'
+
+					end
+				else
+					begin
+						set @lossNum = 0
+						set @winNum = 0	
+						insert into Games.utbl_Games (GameName, UserName, winNum, lossNum, roundNum, gameDate, transactionId)
+							values (@gameName, @username, @winNum, @lossNum, @roundNum, @gameDate, @transactionId)
+						set @variableString = '@username = '+@username+', @isWin = '+ @isWin+', @gameName = '+@gameName
+						exec usp_insertAppLog 'udf_updateGame', @variableString, 'Inserting new bet in utbl_Games for user'
+					end
+			end
+
+
 end
 
 go 
