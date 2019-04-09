@@ -185,6 +185,7 @@ CREATE TABLE [Games].[utbl_Games](
 	[lossNum] [int] NULL,
 	[roundNum] [int] NOT NULL,
 	[gameDate] [datetime] NULL,
+	[transactionId] [int] NOT NULL,
   CONSTRAINT ID_PK PRIMARY KEY (ID),
     ValidFrom datetime2 GENERATED ALWAYS AS ROW START NOT NULL,
     ValidTo datetime2 GENERATED ALWAYS AS ROW END NOT NULL,
