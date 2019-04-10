@@ -1,3 +1,25 @@
+use casino
+go
+--change db to read committed snapshot
+--close sessions to get change
+--Only in single_user mode
+alter database Casino
+set single_user
+
+alter database Casino
+set read_committed_snapshot on
+
+--open sessions
+--Move to Multi User Mode
+alter database Casino
+set multi_user
+
+--set isolation level
+set transaction isolation level read Committed
+
+
+
+
 exec usp_createEmailAccountProfile 'yanivavigail3996','bentovim.avigail@gmail.com', 'bentovim.avigail@gmail.com','bentovim.avigail@gmail.com'
 
 drop proc usp_createEmailAccountProfile

@@ -32,6 +32,9 @@ begin
 	set @variableString = '@username = '+@username+', @password = '+@password+', @email = '+@email+
 						  ', @firstName = '+@firstName+', @lastName = '+@lastName+', @playerAddress = '+@playerAddress+
 						  ', @country = '+@country+', @gender = '+@gender+', @choice = '+@choice
+	--set isolation level
+	set transaction isolation level read Committed
+
 	exec usp_insertAppLog 'usp_welcome', @variableString, 'Start of usp_welcome procedure.'	
 	--check if to register or login and send to appropriate handling
 	if (@choice = 'register')
@@ -135,6 +138,9 @@ begin
 										(select cast(@birthDate as varchar(10)))+ ', @firstName = '+@firstName+
 										', @lastName = '+@lastName+', @playerAddress = '+@playerAddress+
 										', @country = '+@country+', @gender = '+@gender+', @choice = '+@choice
+	--set isolation level
+	set transaction isolation level read Committed
+
 	exec usp_insertAppLog 'usp_validate_playerDetails', @variableString, 'Start of usp_validate_playerDetails procedure.'	
 	--check if new user or personal details change
 	if (@choice <> 'personalDetailsChange')
@@ -334,6 +340,9 @@ begin
 	set @adminNumTries = (select cast(companyValue as int) from Admin.utbl_CompanyDefinitions where companyKey = 'logonTimes')
 	set @variableString = '@username = '+@username+', @playerPassword = '+@playerPassword+', @numFails = '+(select cast(@numFails as nvarchar(50)) )
 							+', @adminNumTries = '+(select cast(@adminNumTries as nvarchar(50)) )
+	--set isolation level
+	set transaction isolation level read Committed
+
 	exec usp_insertAppLog 'usp_Login', @variableString, 'Start of usp_Login procedure. checking if player blocked'	
 
 	--validate username. if exists, see if blocked. if not, validate password
@@ -436,6 +445,9 @@ begin
 	@variableString			nvarchar(500)
 
 	set @variableString = '@username = '+@username
+	--set isolation level
+	set transaction isolation level read Committed
+
 	exec usp_insertAppLog 'usp_autoPasswordChange', @variableString, 'Creating random password that conforms to validation rules. Begin'	
 	--create random password that conforms to validation rules
 	--while loop to check again if random password already exists
@@ -608,6 +620,9 @@ begin
 	DECLARE @variableString nvarchar(500)
 
 	set @variableString = '@username = '+@username+', @action = '+@action
+	--set isolation level
+	set transaction isolation level read Committed
+
 	exec usp_insertAppLog 'usp_lobby', @variableString, 'Start of usp_lobby procedure.'	
 	
 	if (@action='game ground') 
@@ -681,6 +696,9 @@ begin
 	set @variableString = '@username = '+@username+', @choice = '+@choice+', @email = '+@email+', @birthDate = '+(select cast(@birthDate as varchar(10)))+
 						  ', @firstName = '+@firstName+', @lastName = '+@lastName+', @playerAddress = '+@playerAddress+
 						  ', @country = '+@country+', @gender = '+@gender+', @newPassword = '+@newPassword
+	--set isolation level
+	set transaction isolation level read Committed
+
 	exec usp_insertAppLog 'usp_admin', @variableString, 'Start of usp_admin procedure.'	
 
 	set @password = (select playerPassword from Admin.utbl_players where username = @username)
@@ -782,6 +800,9 @@ exec usp_gameGround
 */
 begin
 	declare @variableString nvarchar(500)
+	--set isolation level
+	set transaction isolation level read Committed
+
 	set @variableString = '@username = '+@username+', @gameRequest= '+@gameRequest
 			--check what game to Play and send to game
 			if(@gameRequest='BlackJack')
@@ -839,6 +860,9 @@ begin
 
 	set @variableString = '@username = '+@username+', @numCards = '+(select cast(@numCards as varchar(10)))+
 						  ', @BetAmnt = '+(select CONVERT (VARCHAR(50), @BetAmnt,3))
+	--set isolation level
+	set transaction isolation level read Committed
+
 	exec usp_insertAppLog 'usp_blackJack', @variableString, 'Start of blackJack game. Checking if bet amount <= current bankroll '
 
 	--check if bet amount <= current bankroll
@@ -995,7 +1019,9 @@ begin
 	@variableString			nvarchar(500)
 
 	set @variableString = '@username = '+@username+', @BetAmnt = '+ (select CONVERT (VARCHAR(50), @BetAmnt,3))
-	
+	--set isolation level
+	set transaction isolation level read Committed
+
 	exec usp_insertAppLog 'usp_slotMachine', @variableString, 'Start of SlotMachine game. Checking if bet amount <= current bankroll '
 
 	--check if bet amount <= current bankroll
@@ -1071,6 +1097,9 @@ begin
 	set @transDate = getdate()
 	set @variableString = '@username = '+@username+', @transactionAmount = '+ (select cast(@transactionAmount as varchar(10)))+', @transactionType = '
 							+@transactionType+', @transDate = '+ (select cast(@transDate as varchar(10)))
+	--set isolation level
+	set transaction isolation level read Committed
+
 	exec usp_insertAppLog 'udf_insertBankroll', @variableString, 'Before insert into utbl_transactions'
 	
 	insert into Admin.utbl_transactions (transactionType, transactionAmount, username, transDate)
@@ -1104,6 +1133,9 @@ begin
 	@variableString			nvarchar(500)
 
 	set @variableString = '@username = '+@username+', @isWin = '+ @isWin+', @gameName = '+@gameName
+	--set isolation level
+	set transaction isolation level read Committed
+
 	exec usp_insertAppLog 'udf_updateGame', @variableString, 'Start of procedure. Checking if win or loss. '
 	set @gameDate = (select getdate())
 	set @todayDay = (select (datepart(dd,@gameDate)))
@@ -1231,6 +1263,9 @@ declare
 @variableString		nvarchar(500)
 
 set @variableString = '@innerNumCards = '+(select cast(@innerNumCards as varchar(10)))+', @numCards = '+(select cast(@numCards as varchar(10)))
+--set isolation level
+set transaction isolation level read Committed
+
 exec usp_insertAppLog 'usp_CardTableFiller', @variableString, 'Before table fill'
 
 --remove old cards from table
@@ -1262,34 +1297,29 @@ as
 exec usp_SymbolTableFiller   
 */
 begin
-declare 
-@counter		int		=	0, 
-@symbol			char(1), 
-@numSymbols		int		=	6
+	declare 
+	@counter		int		=	0, 
+	@symbol			char(1), 
+	@numSymbols		int		=	6
 
---remove old symbols from table
-DBCC CHECKIDENT ('Reference.utbl_SymbolTable', RESEED, 0)  
-delete from Reference.utbl_SymbolTable
---populate table with  6 unique symbols 
-		WHILE @counter <  @numSymbols BEGIN
-			set @counter +=1
-			-- insert card 
-			set @symbol = (select substring('#@%&*!', @counter, 1))
+	--set isolation level
+	set transaction isolation level read Committed
 
-			insert into Reference.utbl_SymbolTable (symbol) values (@symbol)
-		end
-		set @counter = 0
+	--remove old symbols from table
+	DBCC CHECKIDENT ('Reference.utbl_SymbolTable', RESEED, 0)  
+	delete from Reference.utbl_SymbolTable
+	--populate table with  6 unique symbols 
+			WHILE @counter <  @numSymbols BEGIN
+				set @counter +=1
+				-- insert card 
+				set @symbol = (select substring('#@%&*!', @counter, 1))
+
+				insert into Reference.utbl_SymbolTable (symbol) values (@symbol)
+			end
+			set @counter = 0
 end
 
 --delete from Reference.utbl_SymbolTable
-
-----populate Admin.utbl_CompanyDefinitions table
---insert into Admin.utbl_CompanyDefinitions (CompanyKey, companyvalue)
---values ('welcomeBonus', 10);
---insert into Admin.utbl_CompanyDefinitions (CompanyKey, companyvalue)
---values ('logonTimes', 5);
---insert into Admin.utbl_CompanyDefinitions (CompanyKey, companyvalue)
---values ('betBonus', 50);
 
 --drop proc usp_CompanyDefinitions
 
@@ -1305,6 +1335,9 @@ exec usp_CompanyDefinitions
 begin
 	declare @variableString nvarchar(500)
 	set @variableString = '@action = '+@action+', @companyKey = '+ @companyKey+', @companyValue = '+(select cast(@companyValue as varchar(10)))
+	--set isolation level
+	set transaction isolation level read Committed
+
 	exec usp_insertAppLog 'usp_CompanyDefinitions', @variableString, 'Before action'
 	if (@action = 'insert')
 		begin
@@ -1352,6 +1385,9 @@ exec usp_logout
 begin
 	declare @variableString nvarchar(500)
 	set @variableString = '@userName = '+@userName
+	--set isolation level
+	set transaction isolation level read Committed
+
 	--check player exists
 	if ((select count(username) from Admin.utbl_players where playerPassword= @playerPassword 
 			and username =@username) >0)
@@ -1382,6 +1418,9 @@ exec usp_insertAppLog
 */
 begin
 	declare @execTime datetime = getdate()
+	--set isolation level
+	set transaction isolation level read Committed
+
 	--log player out of the system
 	insert into Admin.utbl_ApplicationLog (objectName, variables, comments, execTime)
 	values (@objectName, @variables, @comments, @execTime)
@@ -1418,7 +1457,7 @@ BEGIN
 	SELECT @win = ISNULL(SUM(transactionAmount),0) from [Admin].utbl_transactions where [transactionType] = 'Win' and username = @userName
 	SELECT @bonus = ISNULL(SUM(transactionAmount),0) from [Admin].utbl_transactions where [transactionType] = 'Bonus' and username = @userName
 
-	select @bankroll = @deposit - @withdrowal - @bet + @win + @bonus
+	select @bankroll = @deposit - @withdrawal - @bet + @win + @bonus
 
 	-- Return the result of the function
 	
