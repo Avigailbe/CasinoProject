@@ -308,4 +308,86 @@ go
 --select user_name()
 --select * from utbl_games
 --select * from security.utbl_casinoManagers
---REVERT	
+--REVERT
+
+USE Casino;  
+GO  
+-- Create Master key for certificate
+drop MASTER KEY
+CREATE MASTER KEY ENCRYPTION BY PASSWORD = 'CasinoProject_TCDBA24'   
+GO  
+-- Create certificate
+drop CERTIFICATE CreditCards_certificate
+CREATE CERTIFICATE CreditCards_certificate
+   WITH SUBJECT = 'Players Credit Cards numbers';  
+
+GO
+
+-- Create encryption key
+CREATE SYMMETRIC KEY CreditCard_key  
+    WITH ALGORITHM = AES_256  
+    ENCRYPTION BY CERTIFICATE CreditCards_certificate;  
+GO  
+
+USE Casino;  
+GO  
+
+-- Create a column in which to store the encrypted data.  
+DROP TABLE IF EXISTS  [Admin].utbl_CreditCard
+GO
+CREATE TABLE [Admin].utbl_CreditCard 
+	(
+	UserName			usernameDt,
+	CreditCardNumber	VARBINARY(128) NOT NULL,
+	ExpiryDate			NVARCHAR(10) NOT NULL
+	)
+
+GO  	
+
+DROP TABLE IF EXISTS [Security].[utbl_Transactions_audit]
+CREATE TABLE [Security].[utbl_Transactions_audit](
+    transactionID		INT PRIMARY KEY NOT NULL,
+    username			usernameDt,
+    transactionAmount	transactionAmountDt,
+    transactionType		transactionTypeDt,
+    transDate			datetime NOT NULL,
+    operation			nvarchar(10) NOT NULL,
+    CHECK(operation = 'Inserted' or operation='Deleted')
+);
+USE Casino
+GO
+CREATE OR ALTER TRIGGER ADMIN.trg_transaction_audit
+ON [Admin].[utbl_Transactions]
+AFTER INSERT, DELETE
+NOT FOR REPLICATION
+AS
+BEGIN
+    SET NOCOUNT ON;
+    INSERT INTO [Security].[utbl_Transactions_audit](
+    transactionID		,
+    username			,
+    transactionAmount	,
+    transactionType				,
+    transDate	,
+	operation
+    )
+    SELECT
+        i.transactionID,
+        i.username,
+        i.transactionAmount,
+        i.transactionType,
+        i.transDate,
+        'Inserted'
+    FROM
+        inserted i
+    UNION ALL
+    SELECT
+        d.transactionID,
+        d.username,
+        d.transactionAmount,
+        d.transactionType,
+        d.transDate,
+        'Deleted'
+    FROM
+        deleted d;
+END

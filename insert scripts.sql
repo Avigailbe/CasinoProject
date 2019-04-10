@@ -10,6 +10,14 @@ VALUES ( 'USA');
 INSERT INTO reference.utbl_Country (COUNTRY)
 VALUES ( 'Ireland')
 
+INSERT INTO [Reference].[utbl_Gender] ([Gender])
+VALUES ('F');
+INSERT INTO [Reference].[utbl_Gender] ([Gender])
+VALUES ('M');
+GO
+
+exec usp_SymbolTableFiller
+
 DBCC CHECKIDENT ('Security.utbl_CasinoManagers', RESEED, 0)
 delete from [Security].[utbl_CasinoManagers]
 INSERT INTO [Security].[utbl_CasinoManagers] (ManagerName, GameName)

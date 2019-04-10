@@ -613,7 +613,8 @@ as
 /*
 exec usp_lobby
            @username			= 'Avigail', 
-		   @action				= 'game ground'
+		   --@action				= 'game ground'
+		   @action				='cashier'
 */
 
 begin
@@ -638,7 +639,7 @@ begin
 			exec usp_insertAppLog 'usp_lobby', @variableString, 'Before sending to Cashier.'	
 			print 'show Cashier GUI screen'
 --**********for testing begin
-			exec usp_cashier @username
+			exec usp_cashier @username, 'Deposit'
 --**********for testing end
 		end
 	else if (@action='administration office') 
@@ -1065,8 +1066,6 @@ begin
 					set @transactionId = (SELECT @transactionIdOutput)
 					exec udf_updateGame @username, @isWin, @gameName, @transactionId
 				end
-			--exec udf_UpdateBankroll @username, @BetAmount, @IsWin
-			--exec usp_gamesTableUpdate
 			print @wheel1Symbol+', '+@wheel2Symbol+', '+@wheel3Symbol+'->  '+@isWin
 		end
 	else
@@ -1334,7 +1333,7 @@ exec usp_CompanyDefinitions
 */
 begin
 	declare @variableString nvarchar(500)
-	set @variableString = '@action = '+@action+', @companyKey = '+ @companyKey+', @companyValue = '+(select cast(@companyValue as varchar(10)))
+	set @variableString = '@action = '+@action+', @companyKey = '+ @companyKey+', @companyValue = '+@companyValue
 	--set isolation level
 	set transaction isolation level read Committed
 
@@ -1342,8 +1341,15 @@ begin
 	if (@action = 'insert')
 		begin
 			exec usp_insertAppLog 'usp_CompanyDefinitions', @variableString, 'Inserting into utbl_CompanyDefinitions table new key and value'
-			insert into Admin.utbl_CompanyDefinitions (companyKey, companyValue)
-			values (@companyKey, @companyValue);
+			if ((select count(companyKey) from Admin.utbl_CompanyDefinitions where companyKey = @companyKey)=0)
+				begin
+					insert into Admin.utbl_CompanyDefinitions (companyKey, companyValue)
+					values (@companyKey, @companyValue);
+				end
+			else
+				begin
+					exec usp_insertAppLog 'usp_CompanyDefinitions', @variableString, 'Cannot insert into utbl_CompanyDefinitions table an existing key'
+				end
 		end
 	if (@action = 'update')
 		begin
@@ -1465,3 +1471,229 @@ BEGIN
 
 END
 GO
+
+- ================================================
+-- Procedure to insert deposit transaction
+-- ================================================
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+DROP PROCEDURE IF EXISTS usp_MoneyDeposit
+GO
+CREATE PROCEDURE usp_MoneyDeposit
+	-- Add the parameters for the stored procedure here
+	@userName			usernameDt	, 
+	@creditCardNumber	nvarchar(20)	,
+	@expiryDate			nvarchar(10)	,
+	@depositAmmount		transactionAmountDt			
+AS
+
+/*
+exec usp_MoneyDeposit
+           @userName				=	'Avigail',  
+		   @creditCardNumber		=	'4563123498764567',
+		   @expiryDate				=	'072023',
+		   @depositAmmount			=	'100'
+*/
+
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+	-- Check parameters and ammount
+
+    -- Validate Expiry Date
+	DECLARE @Month		INT,
+			@Year		INT,
+			@variableString nvarchar(500)
+
+	set @variableString = '@Month = '+(select cast(@Month as varchar(10)))+', @Year = '+ (select cast(@Year as varchar(10)))
+	select @Month = CONVERT(INT,LEFT(@ExpiryDate,2))
+	select @Year  = CONVERT(INT,RIGHT(@ExpiryDate,4))
+	PRINT @Month
+	PRINT @Year
+	exec usp_insertAppLog 'usp_MoneyDeposit', @variableString, 'Deposit procedure - begin'
+
+	IF @Month not between 1 and 12 or @Year not between 1900 and 9999
+		BEGIN 
+			PRINT 'Invalid expiry date. Please check.'
+			RETURN
+		END
+	ELSE
+		BEGIN
+			IF (@Month< MONTH(GETDATE()) and  @Year <= YEAR(GETDATE()))
+				BEGIN
+					PRINT 'Your credit card is expired. Please use another card.'
+					RETURN
+				END
+			-- Insert deposit into Cretit Card and Transactions tables
+			ELSE
+				BEGIN
+					OPEN SYMMETRIC KEY CreditCard_key  
+						DECRYPTION BY CERTIFICATE CreditCards_certificate
+
+					INSERT INTO [Admin].utbl_CreditCard
+					VALUES
+						(@userName, EncryptByKey(Key_GUID('CreditCard_key'), @creditCardNumber), @ExpiryDate)
+					
+					CLOSE SYMMETRIC KEY CreditCard_key 
+
+					INSERT INTO [Admin].[utbl_Transactions]
+					VALUES
+						('Deposit', @depositAmmount, @userName, GETDATE())
+
+					PRINT  'Your current balance ' + CONVERT(nvarchar, admin.udf_Bankroll(@userName))
+				END
+			END
+		exec usp_insertAppLog 'usp_MoneyDeposit', @variableString, 'Deposit procedure - end'
+
+END
+
+GO
+
+CREATE OR ALTER PROCEDURE usp_Cashier 
+	-- Add the parameters for the stored procedure here
+	@userName	usernameDt, 
+	@action		transactionTypeDt
+AS
+/*
+exec usp_Cashier
+           @userName				=	'Avigail',  
+		   @action					=	'Deposit'
+*/
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+	declare @variableString nvarchar(500)
+	set @variableString = '@userName = '+@userName+', @action = '+@action
+	exec usp_insertAppLog 'usp_Cashier', @variableString, 'Cashier procedure. getting credit details - begin'
+    -- Insert statements for procedure here
+	IF  @action = 'Deposit'
+		BEGIN
+			exec usp_insertAppLog 'usp_Cashier', @variableString, 'Cashier procedure. getting credit details'
+			PRINT 'Please insert credit card number, expiry date and deposit amount'
+			DECLARE
+				@creditCardNumber	nvarchar(20)	,
+				@ExpiryDate			nvarchar(10)	,
+				@depositAmmount		transactionAmountDt		
+			--EXEC usp_MoneyDeposit @userName = @userName, @creditCardNumber = @creditCardNumber, @ExpiryDate = @ExpiryDate, @depositAmmount = @depositAmmount
+		END
+	ELSE
+		BEGIN
+			IF  @action = 'Withdrawal'
+				BEGIN
+					exec usp_insertAppLog 'usp_Cashier', @variableString, 'Cashier procedure. getting shipping details'
+					PRINT 'Please insert shippingAddress and withdrawal amount'
+					DECLARE
+						@withdrawalAmmount		FLOAT			,
+						@shippingAdress			NVARCHAR(500)
+					--EXEC usp_MoneyWithdrawal @userName = @userName, @withdrawalAmmount = @withdrawalAmmount, @shippingAdress = @shippingAdress
+				END
+	exec usp_insertAppLog 'usp_Cashier', @variableString, 'Cashier procedure - end'
+			
+		END
+END
+GO
+
+--DROP PROCEDURE IF EXISTS usp_MoneyWithdrawal
+GO
+CREATE OR ALTER PROCEDURE usp_MoneyWithdrawal
+	-- Add the parameters for the stored procedure here
+	@userName				usernameDt,
+	@withdrawalAmount		transactionAmountDt	,
+	@shippingAddress		NVARCHAR(500)
+AS
+/*
+exec usp_MoneyWithdrawal
+           @userName				=	'Avigail',  
+		   @withdrawalAmount		=	100,
+		   @shippingAddress			=	'123 beni brak telaviv, UK'
+*/
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+	declare @variableString nvarchar(500)
+	set @variableString = '@userName = '+@userName
+	exec usp_insertAppLog 'usp_MoneyWithdrawal', @variableString, 'MoneyWithdrawal procedure. Updateing bankroll - begin'
+
+	-- Check that procedure received all parameters and they are correct
+	IF @userName is NULL or @withdrawalAmount is NULL or @shippingAddress is NULL
+		BEGIN 
+			PRINT 'Please insert correct parameters.'
+			RETURN
+		END
+	ELSE
+	-- Check that the withdrawal amount is more than bankroll
+		BEGIN
+			IF @withdrawalAmount> admin.[udf_Bankroll](@userName)
+				BEGIN
+					PRINT  'Your current balance ' + CONVERT(nvarchar, admin.[udf_Bankroll](@userName)) + '  is too small. Try smaller ammount.'
+					RETURN
+				END
+			ELSE
+	-- If all the parameters are correct isert data to Transactions table and show the user current balance
+				BEGIN
+					INSERT INTO [Admin].[utbl_transactions]
+					VALUES
+						(@userName, @withdrawalAmount, 'Withdrawal', GETDATE())
+					PRINT  'Thank you! Your current balance is ' + CONVERT(nvarchar, admin.[udf_Bankroll](@userName))
+					PRINT  'The check will be sent to ' + @shippingAddress + '. Please inform our Support Team at support@casino.com if you didn''t receive the check in 5 post days.'  
+				END
+		END
+		exec usp_insertAppLog 'usp_MoneyWithdrawal', @variableString, 'MoneyWithdrawal procedure. Updateing bankroll - end'
+
+END
+GO
+
+CREATE OR ALTER PROCEDURE usp_Feedback 
+	-- Add the parameters for the stored procedure here
+	@userName	nvarchar(50)  = '', 
+	@feedback	nvarchar(max) = '',
+	@subject	nvarchar(20)
+AS
+/*
+exec usp_Feedback
+           @userName					=	'Avigail',  
+		   @feedback					=	'great service',
+		   @subject						=	'FEEDBACK'
+*/
+
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+	DECLARE 
+		@email				nvarchar(100),
+		@recipientEmail		nvarchar(100),
+		@variableString		nvarchar(500)
+		
+		set @variableString = '@userName = '+@userName
+		exec usp_insertAppLog 'usp_Feedback', @variableString, 'In player feedback procedure. Sending mail - begin'
+
+		-- Set players email
+		SELECT @email = EmailAddress 
+		FROM admin.utbl_Players
+		where UserName = @userName
+
+		select @recipientEmail = companyValue
+		from admin.utbl_companyDefinitions
+		where companyKey = 'adminMailAddress'
+		-- Send email
+		EXEC msdb.dbo.sp_send_dbmail
+		--@profile_name = 'Public Profile', 
+									@from_address= @email,
+									@recipients = @recipientEmail, 
+									@subject = @subject,
+									@body = @feedback,
+									@body_format = 'HTML',
+									@query_no_truncate = 1,
+									@attach_query_result_as_file = 0;
+
+		exec usp_insertAppLog 'usp_Feedback', @variableString, 'In player feedback procedure. Sending mail - end'
+END

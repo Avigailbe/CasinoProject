@@ -18,8 +18,6 @@ set multi_user
 set transaction isolation level read Committed
 
 
-
-
 exec usp_createEmailAccountProfile 'yanivavigail3996','bentovim.avigail@gmail.com', 'bentovim.avigail@gmail.com','bentovim.avigail@gmail.com'
 
 drop proc usp_createEmailAccountProfile
@@ -60,19 +58,47 @@ begin
 		@is_default = 1 ;  
 end
 
-
 --RLS on Game table - to enable only the game manager to see the rows for their game.
-CREATE USER Anne WITHOUT LOGIN
-GRANT SELECT ON Games.utbl_Games TO Anne
 
-CREATE USER Avi WITHOUT LOGIN
-GRANT SELECT ON Games.utbl_Games TO Avi
+create OR ALTER proc usp_create_ManagerUser 
+as
+begin
+		Declare @fullName varchar(20), @stmtS nvarchar(4000)
+		Declare Mycursor cursor
+		for SELECT managerName
+		  FROM [security].utbl_CasinoManagers 
+		open Mycursor
+		Fetch next from Mycursor into  @fullName
+		while @@FETCH_STATUS=0
+		begin 
+		Print @fullName
+		--creates a global variable 'FullName' to hold selected username
+		--EXEC sp_set_session_context @key = N'FullName', @value = @fullName
+			--CREATE LOGIN @newUsername WITH PASSWORD = @password; 
+			set @stmtS = 'CREATE USER ' + quotename(@fullName,']') +
+						' WITHOUT LOGIN 
+						  GRANT SELECT ON Games.utbl_Games TO ' + quotename(@fullName,']')
+			print @stmtS
+			--exec (@stmtS)
+		Fetch next from Mycursor into @fullName
+		end 
+		close Mycursor
+		Deallocate Mycursor
+end
 
-CREATE USER Karina WITHOUT LOGIN
-GRANT SELECT ON Games.utbl_Games TO Karina
+exec create_ManagerUser
 
-CREATE USER Kari WITHOUT LOGIN
-GRANT SELECT ON Games.utbl_Games TO Kari
+--CREATE USER Anne WITHOUT LOGIN
+--GRANT SELECT ON Games.utbl_Games TO Anne
+
+--CREATE USER Avi WITHOUT LOGIN
+--GRANT SELECT ON Games.utbl_Games TO Avi
+
+--CREATE USER Karina WITHOUT LOGIN
+--GRANT SELECT ON Games.utbl_Games TO Karina
+
+--CREATE USER Kari WITHOUT LOGIN
+--GRANT SELECT ON Games.utbl_Games TO Kari
 
 --drop function Security.udf_securitypredicate
 create function [Security].udf_securitypredicate(@GameName as nvarchar(50))
@@ -315,3 +341,99 @@ begin
 	exec (@stmt)
 
 end
+
+
+--create TestAdmin_Casino login to test masking on utbl_Players table on lastname, firstname and email
+USE [master]
+GO
+CREATE LOGIN [TestAdmin_Casino] WITH PASSWORD=N'Pass.word', DEFAULT_DATABASE=[master], CHECK_EXPIRATION=OFF, CHECK_POLICY=OFF
+GO
+ALTER SERVER ROLE [sysadmin] ADD MEMBER [TestAdmin_Casino]
+GO
+USE [Casino]
+GO
+CREATE USER [TestAdmin_Casino] FOR LOGIN [TestAdmin_Casino]
+GO
+USE [Casino]
+GO
+ALTER USER [TestAdmin_Casino] WITH DEFAULT_SCHEMA=[Admin]
+GO
+USE [Casino]
+GO
+ALTER ROLE [db_datareader] ADD MEMBER [TestAdmin_Casino]
+GO
+DENY UNMASK TO  [TestAdmin_Casino]
+
+ALTER TABLE  [Admin].[utbl_Players]
+ALTER COLUMN FirstName varchar(20) MASKED WITH (FUNCTION = 'default()')
+
+ALTER TABLE  [Admin].[utbl_Players]
+ALTER COLUMN LastName varchar(20) MASKED WITH (FUNCTION = 'default()')
+
+ALTER TABLE  [Admin].[utbl_Players]
+ALTER COLUMN EmailAddress varchar(50) MASKED WITH (FUNCTION = 'email()')
+
+select *
+from Admin.utbl_Players
+
+
+GRANT UNMASK  TO  [TestAdmin_Casino]
+
+EXECUTE AS USER ='TestAdmin_Casino'
+select *
+from Admin.utbl_Players
+REVERT
+
+select CURRENT_USER  , ORIGINAL_LOGIN( ) 
+
+
+---create linked server
+USE [master]
+GO
+EXEC master.dbo.sp_addlinkedserver @server = N'ORCL', @srvproduct=N'', @provider=N'OraOLEDB.Oracle', @datasrc=N'ORCL'
+
+GO
+USE [master]
+GO
+EXEC master.dbo.sp_addlinkedsrvlogin @rmtsrvname = N'ORCL', @locallogin = NULL , @useself = N'False', @rmtuser = N'sa', @rmtpassword = N'123'
+GO
+GO
+
+EXEC master.dbo.sp_serveroption @server=N'ORCL', @optname=N'collation compatible', @optvalue=N'false'
+GO
+
+EXEC master.dbo.sp_serveroption @server=N'ORCL', @optname=N'data access', @optvalue=N'true'
+GO
+
+EXEC master.dbo.sp_serveroption @server=N'ORCL', @optname=N'dist', @optvalue=N'false'
+GO
+
+EXEC master.dbo.sp_serveroption @server=N'ORCL', @optname=N'pub', @optvalue=N'false'
+GO
+
+EXEC master.dbo.sp_serveroption @server=N'ORCL', @optname=N'rpc', @optvalue=N'false'
+GO
+
+EXEC master.dbo.sp_serveroption @server=N'ORCL', @optname=N'rpc out', @optvalue=N'false'
+GO
+
+EXEC master.dbo.sp_serveroption @server=N'ORCL', @optname=N'sub', @optvalue=N'false'
+GO
+
+EXEC master.dbo.sp_serveroption @server=N'ORCL', @optname=N'connect timeout', @optvalue=N'0'
+GO
+
+EXEC master.dbo.sp_serveroption @server=N'ORCL', @optname=N'collation name', @optvalue=null
+GO
+
+EXEC master.dbo.sp_serveroption @server=N'ORCL', @optname=N'lazy schema validation', @optvalue=N'false'
+GO
+
+EXEC master.dbo.sp_serveroption @server=N'ORCL', @optname=N'query timeout', @optvalue=N'0'
+GO
+
+EXEC master.dbo.sp_serveroption @server=N'ORCL', @optname=N'use remote collation', @optvalue=N'true'
+GO
+
+EXEC master.dbo.sp_serveroption @server=N'ORCL', @optname=N'remote proc transaction promotion', @optvalue=N'true'
+go
