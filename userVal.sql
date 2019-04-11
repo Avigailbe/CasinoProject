@@ -5,7 +5,10 @@ go
 ----*****************REMOVE ALL INPUTS EXCEPT CHOICE?**********************************************
 
 go
---login or register
+-- ================================================
+-- Procedure to login or register new player
+-- ================================================
+
 create or alter proc usp_welcome
            @username usernameDt, @Password playerPasswordDt, 
 		   @Email  emailAddressDt, @birthDate birthDateDt,
@@ -84,6 +87,8 @@ exec usp_welcome  'patty', 'a9ghptrbPpd', 'pattys@gmail.com', '2000-03-27 12:20:
 exec usp_welcome  'harry', 'a9ghptrbPpd', 'harry@gmail.com', '2000-03-27 12:20:07.420', 'harry', 'hamster', 'Oranit', 'Ireland', 'F','register'
 exec usp_welcome  'malie', 'a9ghptrbPpd', 'malies@gmail.com', '2000-03-27 12:20:07.420', 'malie', 'saul', 'Oranit', 'Ireland', 'F','login'
 
+exec usp_welcome  'tanya', 'a9ghptrbPpd', 'tanyas@gmail.com', '2000-03-27 12:20:07.420', 'tanya', 'saul', 'Oranit', 'Israel', 'F','login'
+exec usp_welcome  'KARINA', 'a9gyfd9xFpd', 'barjonya@gmail.com', '2000-03-27 12:20:07.420', 'avigail', 'ben', 'Oranit', 'Israel', 'F','login'
 
 --drop proc usp_validate_playerDetails
 --unique username
@@ -94,6 +99,10 @@ exec usp_welcome  'malie', 'a9ghptrbPpd', 'malies@gmail.com', '2000-03-27 12:20:
 --		not 'password' in any combination
 --email address: unique, legal format with @
 --birthdate over 18 years
+-- ================================================
+-- Procedure to validate registration of new player
+-- ================================================
+
 create or alter proc usp_validate_playerDetails 
            @username usernameDt, @playerPassword playerPasswordDt, 
 		   @email  emailAddressDt, @birthDate birthDateDt,
@@ -318,6 +327,10 @@ go
 --drop proc usp_Login
 --exec usp_Login 'Avigail5', '1MNhi'
 --login existing user
+-- ================================================
+-- Procedure to login player
+-- ================================================
+
 create or alter proc usp_Login
            @username usernameDt, @playerPassword playerPasswordDt
 as
@@ -424,6 +437,10 @@ go
 --exec usp_autoPasswordChange 'Avigail5'
 --password reset and send email to player with new password
 --accessed from the Support GUI Screen
+-- ======================================================================
+-- Procedure to password reset and send email to player with new password
+-- ======================================================================
+
 create or alter proc usp_autoPasswordChange (@username usernameDt)
 as
 /*
@@ -507,6 +524,11 @@ go
 
 --select dbo.udf_IsPasswordInPast('avigail','11223rD')
 --select dbo.udf_IsPasswordInPast('avigail','10XYlm')
+-- ======================================================================
+-- Procedure to check if new password was used in the past or is 
+-- one of the familiar passwords
+-- ======================================================================
+
 create or alter function udf_IsPasswordInPast ( @username usernameDt, @newPassword playerPasswordDt) returns char
 as
 /*
@@ -534,18 +556,26 @@ end
 --drop function udf_passwordSyntaxValid
 
 --select dbo.udf_passwordSyntaxValid ('Avigailassword9', 'avigail')
+-- ======================================================================
+-- Procedure to check if the new password syntax is valid
+-- ======================================================================
+
 
 create or alter function udf_PasswordSyntaxValid (@playerPassword nvarchar(50),  @username usernameDt) returns char
 as
 /*
 select dbo.udf_PasswordSyntaxValid
 (
-           'Avigailassword9', 
+           'Ad9sdsdxr', 
 		   'Avigail'
 )
 */
 begin
-		if (len(@playerPassword) >= 5 
+	declare @strongPassLegnth		int
+
+		set @strongPassLength = (select cast(companyValue as int) from Admin.utbl_CompanyDefinitions where companyKey = 'strongPassLength')
+
+		if (len(@playerPassword) >= @strongPassLength 
 			and (PATINDEX(N'%[ABCDEFGHIJKLMNOPQRSTUVWXYZ]%' , 
 									@playerPassword collate SQL_Latin1_General_CP1_CS_AS)> 0)
 			and (PATINDEX(N'%[abcdefghijklmnopqrstuvwxyz]%' , 
@@ -571,6 +601,11 @@ go
 sp_configure 'clr enabled' , 1
 	reconfigure
 	go
+
+-- ======================================================================
+-- Procedure to check if the new password syntax is valid according
+-- to additional external customer requests
+-- ======================================================================
 
 create or alter function udf_PasswordExtValid (@playerPassword playerPasswordDt) 
 returns char
@@ -608,11 +643,16 @@ reconfigure
 --exec usp_lobby 'avigail7', 'game ground' 
 --in the Lobby GUI Screen.
 --send player to games/cashier/admin
+-- ======================================================================
+-- Procedure to check player request when entering lobby
+-- player can choose between games/cashier/admin
+-- ======================================================================
+
 create or alter proc usp_lobby @username usernameDt, @action nvarchar(100)
 as
 /*
 exec usp_lobby
-           @username			= 'Avigail', 
+           @username			= 'elaine', 
 		   --@action				= 'game ground'
 		   @action				='cashier'
 */
@@ -626,6 +666,14 @@ begin
 
 	exec usp_insertAppLog 'usp_lobby', @variableString, 'Start of usp_lobby procedure.'	
 	
+	--check if player logged in
+	if ((select isConnected from Admin.utbl_players where username=@username)='N')
+		begin
+			exec usp_insertAppLog 'usp_lobby', @variableString, 'Player is not logged in. Exiting'
+			print 'Player is not logged in. Exiting'
+			return	
+		end
+
 	if (@action='game ground') 
 		begin
 			exec usp_insertAppLog 'usp_lobby', @variableString, 'Before sending to game ground.'	
@@ -663,6 +711,11 @@ go
 --Administration Office GUI Screen send output if PersonalDetailsChange or passwordChange
 --if PersonalDetailsChange gets input from Personal Details Change GUI Screen 
 --if passwordChange gets input from Password Change GUI Screen 
+-- ======================================================================
+-- Procedure to check player request when in Administration Office
+-- if to change personal details or password
+-- ======================================================================
+
 create or alter proc usp_admin @username usernameDt, @choice nvarchar(100), @email emailAddressDt, @birthDate birthDateDt,
 	@firstName firstNameDt, @lastName lastNameDt, @playerAddress nvarchar(60), 
 	@country countryDt,  @gender genderDt, @newPassword playerPasswordDt
@@ -701,6 +754,14 @@ begin
 	set transaction isolation level read Committed
 
 	exec usp_insertAppLog 'usp_admin', @variableString, 'Start of usp_admin procedure.'	
+
+	--check if player logged in
+	if ((select isConnected from Admin.utbl_players where username=@username)='N')
+		begin
+			exec usp_insertAppLog 'usp_admin', @variableString, 'Player is not logged in. Exiting'
+			print 'Player is not logged in. Exiting'
+			return	
+		end
 
 	set @password = (select playerPassword from Admin.utbl_players where username = @username)
 
@@ -791,6 +852,11 @@ go
 
 --drop proc usp_gameGround
 --called from the Game Ground GUI Screen 
+-- ======================================================================
+-- Procedure to check player request when in Game Ground
+-- if to play blackjack or slotmachine
+-- ======================================================================
+
 create or alter proc usp_gameGround
            @username usernameDt, @gameRequest nvarchar(20)
 as
@@ -805,22 +871,32 @@ begin
 	set transaction isolation level read Committed
 
 	set @variableString = '@username = '+@username+', @gameRequest= '+@gameRequest
-			--check what game to Play and send to game
-			if(@gameRequest='BlackJack')
-				begin
-					exec usp_insertAppLog 'usp_gameRequest', @variableString, 'Player has chosen the blackJack game.'	
-					--test start
-					exec usp_blackjack @username, 10, 4
-					--test end
-				end
-			else if (@gameRequest='SlotMachine')
-				begin	
-					exec usp_insertAppLog 'usp_gameRequest', @variableString, 'Player has chosen the slotMachine game.'	
-					--test start
-					exec usp_SlotMachine  @username, 10
-					--test end
-				end
-			else print 'Game not valid, please choose BlackJack or SlotMachine';
+	exec usp_insertAppLog 'usp_gameGround', @variableString, 'Start of usp_gameGround procedure.'	
+
+	--check if player logged in
+	if ((select isConnected from Admin.utbl_players where username=@username)='N')
+		begin
+			exec usp_insertAppLog 'usp_gameGround', @variableString, 'Player is not logged in. Exiting'
+			print 'Player is not logged in. Exiting'
+			return	
+		end
+
+	--check what game to Play and send to game
+	if(@gameRequest='BlackJack')
+		begin
+			exec usp_insertAppLog 'usp_gameRequest', @variableString, 'Player has chosen the blackJack game.'	
+			--test start
+			exec usp_blackjack @username, 10, 4
+			--test end
+		end
+	else if (@gameRequest='SlotMachine')
+		begin	
+			exec usp_insertAppLog 'usp_gameRequest', @variableString, 'Player has chosen the slotMachine game.'	
+			--test start
+			exec usp_SlotMachine  @username, 10
+			--test end
+		end
+	else print 'Game not valid, please choose BlackJack or SlotMachine';
 end
 go
 
@@ -831,12 +907,16 @@ go
 --blackjack game
 --BlackJack GUI Screen called from the Game Forum GUI Screen 
 --after checking bet amount validation and starts game according to inputted game request 
+-- ======================================================================
+-- Procedure to play the blackjack game
+-- ======================================================================
+
 create or alter proc usp_blackjack
            @username usernameDt, @BetAmnt float, @numCards int
 as
 /*
 exec usp_blackJack
-           @username			= 'tanya', 
+           @username			= 'karina', 
 		   @BetAmnt				= 6,
 		   @numCards			= 2 		   
 */
@@ -865,6 +945,14 @@ begin
 	set transaction isolation level read Committed
 
 	exec usp_insertAppLog 'usp_blackJack', @variableString, 'Start of blackJack game. Checking if bet amount <= current bankroll '
+
+	--check if player logged in
+	if ((select isConnected from Admin.utbl_players where username=@username)='N')
+		begin
+			exec usp_insertAppLog 'usp_blackJack', @variableString, 'Player is not logged in. Exiting'
+			print 'Player is not logged in. Exiting'
+			return	
+		end
 
 	--check if bet amount <= current bankroll
 	set @currentBankRoll= (select [Admin].[udf_Bankroll](@username))
@@ -908,8 +996,6 @@ begin
 			if (@playerCardTotal > 21) 
 				begin
 					set @isWin = 'N'
-					set @transactionType = 'Withdrawal'
-					exec usp_insertTransactions @username, @BetAmnt, @transactionType, @transactionIdOutput output
 					set @transactionType = 'Loss'
 					exec usp_insertTransactions @username, @BetAmnt, @transactionType, @transactionIdOutput output
 					set @transactionId = (SELECT @transactionIdOutput)
@@ -924,8 +1010,6 @@ begin
 				if (@dealerCardTotal=@playerCardTotal)
 					begin
 						set @isWin = 'N'
-						set @transactionType = 'Withdrawal'
-						exec usp_insertTransactions @username, @BetAmnt, @transactionType, @transactionIdOutput output
 						set @transactionType = 'Loss'
 						exec usp_insertTransactions @username, @BetAmnt, @transactionType, @transactionIdOutput output
 						set @transactionId = (SELECT @transactionIdOutput)
@@ -967,8 +1051,6 @@ begin
 				if (@dealerCardTotal>@playerCardTotal) 
 				begin
 					set @IsWin = 'N'
-					set @transactionType = 'Withdrawal'
-					exec usp_insertTransactions @username, @BetAmnt, @transactionType, @transactionIdOutput output
 					set @transactionId = (SELECT @transactionIdOutput)
 					exec udf_updateGame @username, @isWin, @gameName, @transactionId
 					set @transactionType = 'Loss'
@@ -997,13 +1079,16 @@ go
 --slot machine game
 --Slot Machine GUI Screen called from the Game Forum GUI Screen 
 --after checking bet amount validation and starts game according to inputted game request 
+-- ======================================================================
+-- Procedure to play the slotmachine game
+-- ======================================================================
 
 create or alter proc usp_slotMachine
            @username usernameDt, @BetAmnt transactionAmountDt
 as
 /*
 exec usp_slotMachine
-           @username			= 'tanya'	 ,  
+           @username			= 'karina'	 ,  
 		   @BetAmnt			=8
 */
 begin
@@ -1024,6 +1109,14 @@ begin
 	set transaction isolation level read Committed
 
 	exec usp_insertAppLog 'usp_slotMachine', @variableString, 'Start of SlotMachine game. Checking if bet amount <= current bankroll '
+
+	--check if player logged in
+	if ((select isConnected from Admin.utbl_players where username=@username)='N')
+		begin
+			exec usp_insertAppLog 'usp_slotMachine', @variableString, 'Player is not logged in. Exiting'
+			print 'Player is not logged in. Exiting'
+			return	
+		end
 
 	--check if bet amount <= current bankroll
 	set @currentBankRoll= (select [Admin].[udf_Bankroll](@username))
@@ -1058,9 +1151,7 @@ begin
 				begin
 					set @isWin = 'N'
 					set @variableString = '@username = '+@username+',  @isWin = '+@isWin
-					exec usp_insertAppLog 'usp_slotMachine', @variableString, 'There is a loss for SlotMachine game. Inserting Withdrawal to utbl_bankroll table. End of game.'
-					set @transactionType = 'Withdrawal'
-					exec usp_insertTransactions 	@username, @BetAmnt, @transactionType, @transactionIdOutput output
+					exec usp_insertAppLog 'usp_slotMachine', @variableString, 'There is a loss for SlotMachine game. Inserting bet to utbl_bankroll table. End of game.'
 					set @transactionType = 'Loss'
 					exec usp_insertTransactions @username, @BetAmnt, @transactionType, @transactionIdOutput output
 					set @transactionId = (SELECT @transactionIdOutput)
@@ -1076,14 +1167,18 @@ begin
 end
 
 go
-----procedure to update utbl_Transactions table 
+
+-- ======================================================================
+-- Procedure to update utbl_Transactions table
+-- ======================================================================
+
 create or alter proc usp_insertTransactions 
 		@username usernameDt, @transactionAmount transactionAmountDt, @transactionType transactionTypeDt,
 		@transactionIdOutput int output
 as
 /*
 exec usp_insertTransactions
-           @username			= 'tanya',
+           @username			= 'karina',
 		   @transactionAmount	= 100,
 		   @transactionType		= 'Deposit',	   
 		   @transactionIdOutput =  1
@@ -1099,28 +1194,26 @@ begin
 	--set isolation level
 	set transaction isolation level read Committed
 
-	exec usp_insertAppLog 'udf_insertBankroll', @variableString, 'Before insert into utbl_transactions'
+	exec usp_insertAppLog 'usp_insertTransactions', @variableString, 'Before insert into utbl_transactions'
 	
 	insert into Admin.utbl_transactions (transactionType, transactionAmount, username, transDate)
 			values (@transactionType, @transactionAmount, @username, @transDate)
 	
 	set @transactionIdOutput = (SELECT SCOPE_IDENTITY())
-	exec usp_insertAppLog 'udf_insertBankroll', @variableString, 'After insert into utbl_transactions'
+	exec usp_insertAppLog 'usp_insertTransactions', @variableString, 'After insert into utbl_transactions'
 
 end
 
 --drop proc udf_updateGame
 
-----procedure to update utbl_Games table 
+-- ======================================================================
+-- Procedure to update the utbl_Games table 
+-- ======================================================================
+
 create or alter proc udf_updateGame
 		@username usernameDt, @isWin nvarchar(1), @gameName gameNameDt, @transactionId int
 as
-/*
-exec udf_updateGame
-           @username			= 'eoin',
-		   @isWin				= 'Y',
-		   @gameName			= 'blackjack'	
-*/
+
 begin
     declare 
 	@gameDate				datetime,
@@ -1212,7 +1305,8 @@ begin
 			end
 		else if (@IsWin = 'B')
 			begin
-				set @roundNum = 0
+				set @roundNum = @roundNum -1
+				if (@roundNum =0)  set @roundNum = 1
 				if ((select count(*) from Games.utbl_Games where username = @username and gameName = @gameName) > 0)
 					begin
 						set @lossNum = 0
@@ -1246,7 +1340,10 @@ go
 --drop proc usp_CardTableFiller
 
 --exec usp_CardTableFiller
---fill card table with 4 sets of 13 consecutive numbers
+-- ======================================================================
+-- Procedure to fill card table with 4 sets of 13 consecutive numbers
+-- ======================================================================
+
 create or alter proc usp_CardTableFiller
 as
 /*
@@ -1289,7 +1386,11 @@ go
 
 --drop proc usp_SymbolTableFiller
 --exec usp_SymbolTableFiller
---fill symbol table with 3 sets of 6 unique symbols
+
+-- ======================================================================
+-- Procedure to fill symbol table with 6 unique symbols
+-- ======================================================================
+
 create or alter proc usp_SymbolTableFiller
 as
 /*
@@ -1322,6 +1423,10 @@ end
 
 --drop proc usp_CompanyDefinitions
 
+-- ======================================================================
+-- Procedure to insert/update/delete utbl_CompanyDefinitions table 
+-- as per request from the Company Management GUI Screen
+-- ======================================================================
 
 create or alter proc usp_CompanyDefinitions @action nvarchar(20), @companyKey nvarchar(20), @companyValue nvarchar(50)
 as
@@ -1379,14 +1484,16 @@ go
 
 --exec usp_logout  'Avigail', 'avi9B'
 go
---login or register
+-- ======================================================================
+-- Procedure to allow the player to logout
+-- ======================================================================
+
 create or alter proc usp_logout
-           @username usernameDt, @playerPassword playerPasswordDt
+           @username usernameDt
 as
 /*
 exec usp_logout
-           @userName			= 'Avigail',
-		   @playerPassword		= 'avi9B'
+           @userName			= 'Avigail'
 */
 begin
 	declare @variableString nvarchar(500)
@@ -1394,9 +1501,18 @@ begin
 	--set isolation level
 	set transaction isolation level read Committed
 
+	exec usp_insertAppLog 'usp_logout', @variableString, 'User requests to logout of the system. begin'
+
+	--check if player logged in
+	if ((select isConnected from Admin.utbl_players where username=@username)='N')
+		begin
+			exec usp_insertAppLog 'usp_logout', @variableString, 'Player is not logged in. Exiting'
+			print 'Player is not logged in. Exiting'
+			return	
+		end
+
 	--check player exists
-	if ((select count(username) from Admin.utbl_players where playerPassword= @playerPassword 
-			and username =@username) >0)
+	if ((select count(username) from Admin.utbl_players where username =@username) >0)
 		begin
 			exec usp_insertAppLog 'usp_logout', @variableString, 'User requests to logout of the system'
 			--log player out of the system
@@ -1412,6 +1528,11 @@ begin
 end 
 
 go
+
+-- ======================================================================
+-- Procedure to insert records to the utbl_ApplicationLog table
+-- for the QA department to see detailed log messages
+-- ======================================================================
 
 create or alter proc usp_insertAppLog
            @objectName nvarchar(50), @variables nvarchar(500), @comments nvarchar(500)
@@ -1433,6 +1554,11 @@ begin
 end 
 
 go
+
+-- ======================================================================
+-- Procedure to retreive the players bankroll
+-- bankroll = deposit - withdrawal - bet + win + bonus
+-- ======================================================================
 
 CREATE or alter FUNCTION [Admin].[udf_Bankroll]
 (
@@ -1483,11 +1609,10 @@ GO
 DROP PROCEDURE IF EXISTS usp_MoneyDeposit
 GO
 CREATE PROCEDURE usp_MoneyDeposit
-	-- Add the parameters for the stored procedure here
-	@userName			usernameDt	, 
-	@creditCardNumber	nvarchar(20)	,
-	@expiryDate			nvarchar(10)	,
-	@depositAmmount		transactionAmountDt			
+	@userName				usernameDt	, 
+	@creditCardNumber		nvarchar(20)	,
+	@expiryDate				nvarchar(10)	,
+	@depositAmmount			transactionAmountDt			
 AS
 
 /*
@@ -1516,6 +1641,15 @@ BEGIN
 	PRINT @Month
 	PRINT @Year
 	exec usp_insertAppLog 'usp_MoneyDeposit', @variableString, 'Deposit procedure - begin'
+
+	--check if player logged in
+	if ((select isConnected from Admin.utbl_players where username=@username)='N')
+		begin
+			exec usp_insertAppLog 'usp_MoneyDeposit', @variableString, 'Player is not logged in. Exiting'
+			print 'Player is not logged in. Exiting'
+			return	
+		end
+
 
 	IF @Month not between 1 and 12 or @Year not between 1900 and 9999
 		BEGIN 
@@ -1554,8 +1688,14 @@ END
 
 GO
 
+-- ======================================================================
+-- Procedure that sends the player to the cashier
+-- and does the appropriate action for players request for 
+-- deposit or withdrawal
+-- ======================================================================
+
+
 CREATE OR ALTER PROCEDURE usp_Cashier 
-	-- Add the parameters for the stored procedure here
 	@userName	usernameDt, 
 	@action		transactionTypeDt
 AS
@@ -1572,6 +1712,15 @@ BEGIN
 	declare @variableString nvarchar(500)
 	set @variableString = '@userName = '+@userName+', @action = '+@action
 	exec usp_insertAppLog 'usp_Cashier', @variableString, 'Cashier procedure. getting credit details - begin'
+
+	--check if player logged in
+	if ((select isConnected from Admin.utbl_players where username=@username)='N')
+		begin
+			exec usp_insertAppLog 'usp_Cashier', @variableString, 'Player is not logged in. Exiting'
+			print 'Player is not logged in. Exiting'
+			return	
+		end
+
     -- Insert statements for procedure here
 	IF  @action = 'Deposit'
 		BEGIN
@@ -1600,6 +1749,11 @@ BEGIN
 END
 GO
 
+-- ======================================================================
+-- Procedure that does the appropriate action for players request for 
+-- withdrawal
+-- ======================================================================
+
 --DROP PROCEDURE IF EXISTS usp_MoneyWithdrawal
 GO
 CREATE OR ALTER PROCEDURE usp_MoneyWithdrawal
@@ -1610,7 +1764,7 @@ CREATE OR ALTER PROCEDURE usp_MoneyWithdrawal
 AS
 /*
 exec usp_MoneyWithdrawal
-           @userName				=	'Avigail',  
+           @userName				=	'avigail',  
 		   @withdrawalAmount		=	100,
 		   @shippingAddress			=	'123 beni brak telaviv, UK'
 */
@@ -1621,6 +1775,14 @@ BEGIN
 	declare @variableString nvarchar(500)
 	set @variableString = '@userName = '+@userName
 	exec usp_insertAppLog 'usp_MoneyWithdrawal', @variableString, 'MoneyWithdrawal procedure. Updateing bankroll - begin'
+
+	--check if player logged in
+	if ((select isConnected from Admin.utbl_players where username=@username)='N')
+		begin
+			exec usp_insertAppLog 'usp_MoneyWithdrawal', @variableString, 'Player is not logged in. Exiting'
+			print 'Player is not logged in. Exiting'
+			return	
+		end
 
 	-- Check that procedure received all parameters and they are correct
 	IF @userName is NULL or @withdrawalAmount is NULL or @shippingAddress is NULL
@@ -1651,9 +1813,14 @@ BEGIN
 END
 GO
 
+-- ======================================================================
+-- Procedure that sends a feedback email for players request for 
+-- feedback
+-- ======================================================================
+
 CREATE OR ALTER PROCEDURE usp_Feedback 
 	-- Add the parameters for the stored procedure here
-	@userName	nvarchar(50)  = '', 
+	@userName	usernameDt, 
 	@feedback	nvarchar(max) = '',
 	@subject	nvarchar(20)
 AS
@@ -1675,6 +1842,14 @@ BEGIN
 		
 		set @variableString = '@userName = '+@userName
 		exec usp_insertAppLog 'usp_Feedback', @variableString, 'In player feedback procedure. Sending mail - begin'
+
+		--check if player logged in
+		if ((select isConnected from Admin.utbl_players where username=@username)='N')
+			begin
+				exec usp_insertAppLog 'usp_Feedback', @variableString, 'Player is not logged in. Exiting'
+				print 'Player is not logged in. Exiting'
+				return	
+			end
 
 		-- Set players email
 		SELECT @email = EmailAddress 

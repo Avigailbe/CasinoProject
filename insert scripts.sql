@@ -50,6 +50,9 @@ exec usp_CompanyDefinitions 'insert', 'diffBackupDescrb', 'New Diff backup for C
 exec usp_CompanyDefinitions 'insert', 'logBackupDest', 'D:\CourseMaterials\casino\BackupFiles\Log.bak'
 exec usp_CompanyDefinitions 'insert', 'logBackupName', 'New Log backup Casino'
 exec usp_CompanyDefinitions 'insert', 'logBackupDescrb', 'New Log backup for Casino DB'
+exec usp_CompanyDefinitions 'insert', 'adminActivePlayer', '5'
+
+exec usp_CompanyDefinitions 'insert', 'strongPassLength', '5'
 
 --exec usp_CompanyDefinitions 'update', 'fullBackupDest', 'D:\CourseMaterials\casino\BackupFiles\Full.bak'
 --exec usp_CompanyDefinitions 'update', 'diffBackupDest', 'D:\CourseMaterials\casino\BackupFiles\Diff.bak'
