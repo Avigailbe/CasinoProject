@@ -21,7 +21,11 @@ set transaction isolation level read Committed
 exec usp_createEmailAccountProfile 'yanivavigail3996','bentovim.avigail@gmail.com', 'bentovim.avigail@gmail.com','bentovim.avigail@gmail.com'
 
 drop proc usp_createEmailAccountProfile
---create profile for sending e-mails
+
+-- ======================================================================
+-- Procedure to create profile for sending e-mails
+-- ======================================================================
+
 --****PART OF INSTALLATION NOT TO BE RUN TWICE
 create proc usp_createEmailAccountProfile (	@emailPassword nvarchar(100), @emailusername nvarchar(100),
 											@emailToAddress nvarchar(100), @emailFromAddress nvarchar(100) )
@@ -58,7 +62,11 @@ begin
 		@is_default = 1 ;  
 end
 
---RLS on Game table - to enable only the game manager to see the rows for their game.
+
+-- ======================================================================
+-- Procedure to create RLS on Game table - to enable only 
+-- the game manager to see the rows for their game.
+-- ======================================================================
 
 create OR ALTER proc usp_create_ManagerUser 
 as
@@ -101,6 +109,11 @@ exec create_ManagerUser
 --GRANT SELECT ON Games.utbl_Games TO Kari
 
 --drop function Security.udf_securitypredicate
+-- ======================================================================
+-- Function to create predicate needed for RLS on Game table - to enable only 
+-- the game manager to see the rows for their game.
+-- ======================================================================
+
 create function [Security].udf_securitypredicate(@GameName as nvarchar(50))
     returns table
 with schemabinding
@@ -115,11 +128,19 @@ as
 								   = user_name() or user_name() = 'dbo')
 
 GO
+
+-- ======================================================================
+-- Policy needed for RLS on Game table - to enable only 
+-- the game manager to see the rows for their game.
+-- as a filter predicate and switching it on
+-- ======================================================================
+
 create SECURITY POLICY GamesPolicyFilter
 	ADD FILTER PREDICATE Security.udf_securitypredicate(GameName) 
 	ON Games.utbl_Games
 	WITH (STATE = ON);
 go
+
 -- Create and enable a security policy adding the function fn_securitypredicate 
 -- as a filter predicate and switching it on
 --DROP SECURITY POLICY GamesPolicyFilter
@@ -131,7 +152,12 @@ select * from [Security].utbl_CasinoManagers
 REVERT	
 
 
---bet bonus procedure for Bet Bonus for Casino job
+-- ======================================================================
+-- Procedure for Bet Bonus Casino job
+-- checks if a player has bet higher than @adminMinBetAmntForBonus
+-- in the last 24 hours. if so will receive a bonus
+-- ======================================================================
+
 
 create or alter proc usp_betBonus 	
 as
@@ -172,8 +198,12 @@ begin
 end
 
 
---connections check procedure for connections>100 Casino job
 
+-- ======================================================================
+-- Procedure for connections>100 Casino job
+-- checks if connections> numConnectionsAlert
+-- if so will send a mail to admin address at adminMailAddress
+-- ======================================================================
 create or alter proc usp_connectionsCheck 		
 as
 /*
@@ -207,7 +237,11 @@ begin
 end
 	
 
-	--connections check procedure for connections>100 Casino job
+-- ======================================================================
+-- Procedure to check if new logins were created in the last adminNumMins
+-- for [No logins in last 10 mins] job
+-- if so will send a mail to admin address at adminMailAddress
+-- ======================================================================
 --drop proc usp_noNewLogins
 create or alter proc usp_noNewLogins 		
 as
@@ -271,6 +305,12 @@ WITH (STATE = ON) ;
 GO  
 
 
+-- ======================================================================
+-- Procedure to create full backup
+-- for [FullBackupCasino] job
+-- if fails, will send a mail to admin
+-- ======================================================================
+
 create or alter proc usp_createFullBackup 	
 as
 /*
@@ -294,6 +334,12 @@ begin
 	exec (@stmt)
 
 end
+
+-- ======================================================================
+-- Procedure to create diff backup
+-- for [DiffBackupCasino] job
+-- if fails, will send a mail to admin
+-- ======================================================================
 
 create or alter proc usp_createDiffBackup 	
 as
@@ -319,6 +365,11 @@ begin
 
 end
 
+-- ======================================================================
+-- Procedure to create log backup
+-- for [logBackupCasino] job
+-- if fails, will send a mail to admin
+-- ======================================================================
 create or alter proc usp_createLogBackup 	
 as
 /*
@@ -342,6 +393,53 @@ begin
 
 end
 
+-- ======================================================================
+-- Procedure to check for player activity
+-- for [DiffBackupCasino] job
+-- to check for player activity in last @adminActivePlayer minutes
+-- ======================================================================
+--drop PROCEDURE usp_playerActivity
+CREATE OR ALTER PROCEDURE usp_playerActivity 
+AS
+/*
+exec usp_playerActivity
+*/
+
+BEGIN
+	declare 
+	@varString					nvarchar(500),
+	@userName					usernameDt,
+	@currentTime				datetime,
+	@lastActionTime				datetime,
+	@inactiveMins				int,
+	@adminActivePlayer			nvarchar(100)
+	Declare Mycursor cursor
+	for select username 
+	from admin.utbl_players
+	where isConnected = 'Y'
+	open Mycursor
+	Fetch next from Mycursor into  @username
+	while @@FETCH_STATUS=0
+	begin 
+		set @currentTime = getdate()
+		set @lastActionTime = (select isnull(max(exectime),1) from admin.utbl_ApplicationLog where variables like '%'+@userName+'%')
+		set @adminActivePlayer = (select companyValue from Admin.utbl_CompanyDefinitions where companyKey = 'adminActivePlayer')
+		print @userName
+		print '@currentTime = '+cast(@currentTime as varchar(100))
+		print '@lastActionTime = '+cast(@lastActionTime as varchar(100))
+		set @inactiveMins = (select (datediff(minute,@lastActionTime, @currentTime)))
+
+		if (@inactiveMins >= @adminActivePlayer)
+			begin
+				print 'before logout'
+				exec usp_logout @userName
+			end
+
+		Fetch next from Mycursor into @username
+	end 
+	close Mycursor
+	Deallocate Mycursor
+END
 
 --create TestAdmin_Casino login to test masking on utbl_Players table on lastname, firstname and email
 USE [master]
