@@ -425,7 +425,7 @@ END
 -- Procedure to create partitions
 -- for [createDailyPartition] job
 -- ======================================================================
-create PARTITION FUNCTION [partitionFunc_day] (datetime) AS RANGE RIGHT FOR VALUES ('2019-04-13 20:45:58.907', '2019-04-14 20:45:58.907', '2019-04-15 20:45:58.907');
+create PARTITION FUNCTION [partitionFunc_day] (datetime) AS RANGE RIGHT FOR VALUES ('2019-04-13 20:45:58.907');
 CREATE PARTITION SCHEME Partitioned AS PARTITION [partitionFunc_day] TO ([SECONDARY],[PRIMARY])
 
 create OR ALTER procedure usp_createNewPartition 
@@ -437,11 +437,11 @@ BEGIN
 	@PrevMax DATETIME			=(SELECT max(CONVERT(DATETIME,Value)) FROM sys.partition_functions f
 										INNER JOIN sys.partition_range_values r   
 										ON f.function_id = r.function_id 
-										WHERE f.name = 'partFunc_day')
+										WHERE f.name = 'partitionFunc_day')
 	IF @PrevMax<@CurrentDay
 	begin
 		ALTER PARTITION FUNCTION [partitionFunc_day]() MERGE RANGE (@PrevMax)
-		ALTER PARTITION SCHEME partFunc_day	NEXT USED [fg1]
+		ALTER PARTITION SCHEME Partitioned	NEXT USED [PRIMARY]
 		ALTER PARTITION FUNCTION [partitionFunc_day]() SPLIT RANGE (@CurrentDay)
 	end
 end
