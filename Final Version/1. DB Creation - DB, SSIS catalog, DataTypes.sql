@@ -6,22 +6,27 @@ IF EXISTS(select * from sys.databases where name='Casino')
 DROP DATABASE [Casino]
 GO
 declare @dataPath nvarchar(max)
+declare @data2Path nvarchar(max)
 declare @logPath nvarchar(max)
 declare @sql nvarchar(max)
-
+			--CONTAINMENT = NONE
 ------/****INSERT @dataPath and @logPath variables****/-------
 
-set @dataPath = 'C:\Users\karina_b\Documents\My stuff\learning\Technion\TCDBA\Final project\DB\Casino_Master.mdf'
-set @logPath =	'C:\Users\karina_b\Documents\My stuff\learning\Technion\TCDBA\Final project\DB\Casino_Log.ldf'
+set @dataPath = 'D:\project\casino\Casino_Master.mdf'
+set @data2Path = 'D:\project\casino\Casino2_Master.ndf'
+set @logPath =	'D:\project\casino\Casino_Log.ldf'
 
 set @sql = 'CREATE DATABASE [Casino]
-			CONTAINMENT = NONE
 			ON  PRIMARY 
-			(NAME = ''Casino_Master'', 
+			(NAME = Casino_Master, 
 			FILENAME = '''+ @dataPath+''' , SIZE = 8192KB , 
-			MAXSIZE = UNLIMITED, FILEGROWTH = 7168KB, FILEGROUP [SECONDARY] ) 
+			MAXSIZE = UNLIMITED, FILEGROWTH = 7168KB), 
+			FILEGROUP [SECONDARY] 
+			(NAME = Casino2_Master, 
+			FILENAME = '''+ @data2Path+''' , SIZE = 8192KB , 
+			MAXSIZE = UNLIMITED, FILEGROWTH = 7168KB)
 			LOG ON 
-			(NAME = ''Casino_Log'', FILENAME = '''+@logPath+''' , SIZE = 5120KB , 
+			(NAME = Casino_Log, FILENAME = '''+@logPath+''' , SIZE = 5120KB , 
 			MAXSIZE = 2048GB , FILEGROWTH = 3072KB)'
 print @sql
 exec (@sql)
@@ -47,7 +52,7 @@ USE [Casino]
 GO
 --datatype for password 
 /****** Object:  UserDefinedDataType [playerPassword]    Script Date: 03-Apr-19 12:27:27 PM ******/
-CREATE TYPE [playerPasswordDt] FROM VARBINARY(128) NOT NULL
+create TYPE [playerPasswordDt] FROM nvarchar(100)
 GO
 --datatype for username
 /****** Object:  UserDefinedDataType [username]    Script Date: 03-Apr-19 12:27:27 PM ******/
@@ -55,15 +60,15 @@ CREATE TYPE [usernameDt] FROM [nvarchar](10) NOT NULL
 GO
 --datatype for  firstName
 /****** Object:  UserDefinedDataType [firstName]    Script Date: 03-Apr-19 12:27:27 PM ******/
-CREATE TYPE [firstNameDt] FROM [nvarchar](20) NOT NULL MASKED WITH (FUNCTION = 'default()')
+CREATE TYPE [firstNameDt] FROM [nvarchar](20) NOT NULL 
 GO
 --datatype for lastName
 /****** Object:  UserDefinedDataType [lastName]    Script Date: 03-Apr-19 12:27:27 PM ******/
-CREATE TYPE [lastNameDt] FROM [nvarchar](20) NOT NULL MASKED WITH (FUNCTION = 'default()')
+CREATE TYPE [lastNameDt] FROM [nvarchar](20) NOT NULL 
 GO
 --datatype for Address
 /****** Object:  UserDefinedDataType [address]    Script Date: 03-Apr-19 12:27:27 PM ******/
-CREATE TYPE [addressDt] FROM [nvarchar](100) NULL MASKED WITH (FUNCTION = 'default()')
+CREATE TYPE [addressDt] FROM [nvarchar](100) NULL 
 GO
 --datatype for country
 /****** Object:  UserDefinedDataType [country]    Script Date: 03-Apr-19 12:27:27 PM ******/
@@ -71,7 +76,7 @@ CREATE TYPE [countryDt] FROM [nvarchar](15) NOT NULL
 GO
 --datatype for emailAddress
 /****** Object:  UserDefinedDataType [emailAddress]    Script Date: 03-Apr-19 12:27:27 PM ******/
-CREATE TYPE [emailAddressDt] FROM [nvarchar](100) NOT NULL MASKED WITH (FUNCTION = 'email()')
+CREATE TYPE [emailAddressDt] FROM [nvarchar](100) NOT NULL 
 GO
 --datatype for gender
 /****** Object:  UserDefinedDataType [gender]    Script Date: 03-Apr-19 12:27:27 PM ******/

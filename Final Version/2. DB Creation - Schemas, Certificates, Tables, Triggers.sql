@@ -51,11 +51,11 @@ go
 USE Casino;  
 GO  
 -- Create Master key for certificates
-drop MASTER KEY
+--drop MASTER KEY
 CREATE MASTER KEY ENCRYPTION BY PASSWORD = 'CasinoProject_TCDBA24'   
 GO  
 -- Create certificate CreditCard
-drop CERTIFICATE CreditCards_certificate
+--drop CERTIFICATE CreditCards_certificate
 CREATE CERTIFICATE CreditCards_certificate
    WITH SUBJECT = 'Players Credit Cards numbers';  
 
@@ -121,36 +121,10 @@ CREATE TABLE [Reference].[utbl_GitPasswords](
 GO
 
 DROP TABLE IF EXISTS [Reference].[Temp_utbl_GitPasswords]
-CREATE TABLE [Reference].[utbl_GitPasswords](
+CREATE TABLE [Reference].[Temp_utbl_GitPasswords](
 	ExtPassword	NVARCHAR(100) NOT NULL
 ) ON [PRIMARY]
 
-GO
-
--- Games Tables
-
-DROP TABLE IF EXISTS [Games].[utbl_CardTable]
-CREATE TABLE [Games].[utbl_CardTable](
-	[Id]		[int] IDENTITY(1,1) NOT NULL,
-	[CardNum]	[int] NOT NULL
-) ON [PRIMARY]
-
-GO
-
-DROP SECURITY POLICY IF EXISTS GamesPolicyFilter
-drop function IF EXISTS Security.udf_securitypredicate
-GO
-DROP TABLE IF EXISTS [Games].[utbl_Games]
-SET QUOTED_IDENTIFIER ON
-GO
-CREATE TABLE [Games].[utbl_Games](
-	[ID] [int] IDENTITY(1,1) NOT NULL,
-	[gameName] [nvarchar](50) NOT NULL,
-	[userName] usernameDt,
-	[win] [tinyint] NULL,
-	[roundNum] [int] NOT NULL,
-	[gameDate] [datetime] NULL,
-	[transactionId] [int] NOT NULL foreign key references admin.utbl_transations(transationId)) ON [PRIMARY]
 GO
 
 -- Admin Tables
@@ -167,7 +141,7 @@ CREATE TABLE [Admin].[utbl_CompanyDefinitions](
 
 GO
 
-ALTER TABLE [admin].[utbl_Players] SET ( SYSTEM_VERSIONING = OFF )
+--ALTER TABLE [admin].[utbl_Players] SET ( SYSTEM_VERSIONING = OFF )
 GO
 DROP TABLE IF EXISTS [admin].[utbl_Players]
 DROP TABLE IF EXISTS [admin].[utbl_PlayersHistory]
@@ -176,11 +150,11 @@ GO
 CREATE TABLE [admin].[utbl_Players](
 	[UserName] usernameDt,
 	[PlayerPassword] playerPasswordDt,
-	[FirstName] firstNameDt,
-	[LastName] lastNameDt,
-	[PlayerAddress] addressDt,
+	[FirstName] firstNameDt MASKED WITH (FUNCTION = 'default()'),
+	[LastName] lastNameDt MASKED WITH (FUNCTION = 'default()'),
+	[PlayerAddress] addressDt MASKED WITH (FUNCTION = 'default()'),
 	[Country] countryDt,
-	[EmailAddress] emailAddressDt,
+	[EmailAddress] emailAddressDt MASKED WITH (FUNCTION = 'email()'),
 	[Gender] genderDt,
 	[BirthDate] birthDateDt,
 	[NumFails] [int] NULL,
@@ -223,12 +197,38 @@ GO
 
 DROP TABLE IF EXISTS [Admin].[utbl_transactions]
 CREATE TABLE [Admin].[utbl_transactions](
-	[transactionId] [int] IDENTITY(1,1) NOT NULL,
+	[transactionId] [int] IDENTITY(1,1) NOT NULL PRIMARY KEY,
 	[transactionType] transactionTypeDt NOT NULL,
 	[transactionAmount] transactionAmountDt NOT NULL,
-	[username] usernameDt FOREIGN KEY REFERENCES [admin].[utbl_Players](UserName),
+	[username] usernameDt ,
 	[transDate] [datetime] NULL
 ) ON [PRIMARY]
+GO
+
+-- Games Tables
+
+DROP TABLE IF EXISTS [Games].[utbl_CardTable]
+CREATE TABLE [Games].[utbl_CardTable](
+	[Id]		[int] IDENTITY(1,1) NOT NULL,
+	[CardNum]	[int] NOT NULL
+) ON [PRIMARY]
+
+GO
+
+DROP SECURITY POLICY IF EXISTS GamesPolicyFilter
+drop function IF EXISTS Security.udf_securitypredicate
+GO
+DROP TABLE IF EXISTS [Games].[utbl_Games]
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [Games].[utbl_Games](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[gameName] [nvarchar](50) NOT NULL,
+	[userName] usernameDt,
+	[win] [tinyint] NULL,
+	[roundNum] [int] NOT NULL,
+	[gameDate] [datetime] NULL,
+	[transactionId] [int] NOT NULL ) ON [PRIMARY]
 GO
 
 -- Security Tables
@@ -257,14 +257,14 @@ GO
 DROP TABLE IF EXISTS [Security].[utbl_Transactions_audit]
 CREATE TABLE [Security].[utbl_Transactions_audit](
     transactionID		INT PRIMARY KEY NOT NULL,
-    username			usernameDt,
+    username			NVARCHAR(50),
     transactionAmount	transactionAmountDt,
     transactionType		transactionTypeDt,
     transDate			datetime NOT NULL,
-    operation			nvarchar(10) NOT NULL,
+    operation			nvarchar(100) NOT NULL,
     CHECK(operation = 'Inserted' or operation='Deleted'),
-	currentUser			usernameDt,
-	currentLogin		usernameDt
+	currentUser			NVARCHAR(50),
+	currentLogin		NVARCHAR(50)
 );
 USE Casino
 GO
@@ -274,11 +274,11 @@ AFTER INSERT, DELETE, UPDATE
 NOT FOR REPLICATION
 AS
 BEGIN
-	DECLARE @CurrentUser	usernameDt,
-			@CurrentLogin	usernameDt
+	DECLARE @CurrentUser	NVARCHAR(50),
+			@CurrentLogin	NVARCHAR(50)
 
 	SELECT	@CurrentUser = CURRENT_USER,
-			@CurrentLogin = ORIGINAL_LOGIN( ) 
+			@CurrentLogin = ORIGINAL_LOGIN() 
 
     SET NOCOUNT ON;
     INSERT INTO [Security].[utbl_Transactions_audit](
@@ -298,8 +298,8 @@ BEGIN
         i.transactionType,
         i.transDate,
         'Inserted',
-		i.currentUser,
-		i.currentLogin
+		CURRENT_USER,
+		ORIGINAL_LOGIN()
     FROM
         inserted i
     UNION ALL
@@ -310,8 +310,8 @@ BEGIN
         d.transactionType,
         d.transDate,
         'Deleted',
-		d.currentUser,
-		d.currentLogin
+		CURRENT_USER,
+		ORIGINAL_LOGIN()
     FROM
         deleted d;
 END
@@ -324,7 +324,7 @@ CREATE CLUSTERED INDEX IX_games_gameDate
          ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON)
   ON Partitioned(gameDate)
 
-CREATE NON CLUSTERED INDEX IX_games_username_gamename
+CREATE NONCLUSTERED INDEX IX_games_username_gamename
   ON games.utbl_games (username, gameName);
 
 CREATE CLUSTERED INDEX IX_players_gameDate
@@ -333,7 +333,7 @@ CREATE CLUSTERED INDEX IX_players_gameDate
          ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON)
   ON Partitioned(loginTime)
 
-CREATE NON CLUSTERED INDEX IX_players_username
+CREATE NONCLUSTERED INDEX IX_players_username
   ON admin.utbl_players (username);
 
 CREATE CLUSTERED INDEX IX_transactions_transDate
@@ -342,9 +342,9 @@ CREATE CLUSTERED INDEX IX_transactions_transDate
          ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON)
   ON Partitioned(transDate)
 
-CREATE NON CLUSTERED INDEX IX_transactions_username
+CREATE NONCLUSTERED INDEX IX_transactions_username
   ON admin.utbl_transactions (username);
 
-CREATE NON CLUSTERED INDEX IX_ApplicationLog_variables
+CREATE NONCLUSTERED INDEX IX_ApplicationLog_variables
   ON [Admin].[utbl_ApplicationLog] (variables)
 

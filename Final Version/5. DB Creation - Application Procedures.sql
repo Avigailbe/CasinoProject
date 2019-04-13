@@ -27,7 +27,7 @@ exec usp_welcome
 		   @PlayerAddress		= 'Dragot 4, Oranit',  
 		   @Country				= 'Israel', 
 		   @Gender				= 'F',  
-		   @choice				= 'register'
+		   @choice				= 'REGISTER'
 */
 begin
 	declare @variableString nvarchar(500)
@@ -35,8 +35,6 @@ begin
 	set @variableString = '@username = '+@username+', @password = '+@password+', @email = '+@email+
 						  ', @firstName = '+@firstName+', @lastName = '+@lastName+', @playerAddress = '+@playerAddress+
 						  ', @country = '+@country+', @gender = '+@gender+', @choice = '+@choice
-	--set isolation level
-	set transaction isolation level read Committed
 
 	exec usp_insertAppLog 'usp_welcome', @variableString, 'Start of usp_welcome procedure.'	
 	--check if to register or login and send to appropriate handling
@@ -60,35 +58,35 @@ end
 
 go
 
-exec usp_welcome  'KARINA', 'a9gyfd9xFpd', 'barjonya@gmail.com', '2000-03-27 12:20:07.420', 'avigail', 'ben', 'Oranit', 'Israel', 'F','register'
-exec usp_welcome  'KARA', 'a9gyd9xFpd', 'baronya@gmail.com', '2000-03-27 12:20:07.420', 'avigail', 'ben', 'Oranit', 'Israel', 'F','register'
-exec usp_welcome  'KARA', 'a9gyd9xFpd', 'baronya@gmail.com', '2000-03-27 12:20:07.420', 'avigail', 'ben', 'Oranit', 'Israel', 'F','login'
+--exec usp_welcome  'KARINA', 'a9gyfd9xFpd', 'barjonya@gmail.com', '2000-03-27 12:20:07.420', 'avigail', 'ben', 'Oranit', 'Israel', 'F','register'
+--exec usp_welcome  'KARA', 'a9gyd9xFpd', 'baronya@gmail.com', '2000-03-27 12:20:07.420', 'avigail', 'ben', 'Oranit', 'Israel', 'F','register'
+--exec usp_welcome  'KARA', 'a9gyd9xFpd', 'baronya@gmail.com', '2000-03-27 12:20:07.420', 'avigail', 'ben', 'Oranit', 'Israel', 'F','login'
 
-exec usp_welcome  'Karina2', 'a9gyfdD9xpd', 'bar@gmail.com', '2000-03-27 12:20:07.420', 'avigail', 'ben', 'Oranit', 'Israel', 'F','register'
---exec usp_welcome  'Avigail', '11223rD', 'bentovim.avigail@gmail.com', '2000-03-27 12:20:07.420', 'avigail', 'ben', 'Oranit', 'Israel', 'F','register'
-exec usp_welcome  'Avigail5', 'a9gyfd9xFpd', 'bentovim.avi@gmail.com', '2000-03-27 12:20:07.420', 'avigail', 'ben', 'Oranit', 'Israel', 'F','register'
-exec usp_welcome  'Avigail', 'rt45Dy', 'bentovim.avigail@gmail.com', '2000-03-27 12:20:07.420', 'avigail', 'ben', 'Oranit', 'Israel', 'F','login'
-exec usp_welcome  'Avi', '15g1223rD', 'bent.avigail@gmail.com', '2000-03-27 12:20:07.420', 'avigail', 'ben', 'Oranit', 'Israel', 'F','register'
-exec usp_welcome  'Avi', '15g1223rD', 'bent.avigail@gmail.com', '2000-03-27 12:20:07.420', 'avigail', 'ben', 'Oranit', 'Israel', 'F','login'
-exec usp_welcome  'Aviv', '15g223rD', 'ben.avigail@gmail.com', '2000-03-27 12:20:07.420', 'avigail', 'ben', 'Oranit', 'Israel', 'F','register'
-exec usp_welcome  'KAR', 'a9gyd9bPpd', 'barnya@gmail.com', '2000-03-27 12:20:07.420', 'avigail', 'ben', 'Oranit', 'Israel', 'F','register'
-exec usp_welcome  'KAR', 'a9gyd9bPpd', 'barnya@gmail.com', '2000-03-27 12:20:07.420', 'avigail', 'ben', 'Oranit', 'Israel', 'F','login'
-exec usp_welcome  'Avigail5', 'Ail56', 'bentovim.avi@gmail.com', '2000-03-27 12:20:07.420', 'avigail', 'ben', 'Oranit', 'Israel', 'F','login'
-exec usp_welcome  'joel', 'a9gyp9bPpd', 'joa@gmail.com', '2000-03-27 12:20:07.420', 'joa', 'hana', 'Oranit', 'Israel', 'F','register'
-exec usp_welcome  'mark', 'a9gyp9bPpd', 'markm@gmail.com', '2000-03-27 12:20:07.420', 'mark', 'manny', 'Oranit', 'Israel', 'F','register'
-exec usp_welcome  'eoin', 'a9gyoyrbPpd', 'eoinb@gmail.com', '2000-03-27 12:20:07.420', 'eoin', 'bar', 'Oranit', 'Israel', 'F','register'
-exec usp_welcome  'elaine', 'a9gyoptrbPpd', 'elainec@gmail.com', '2000-03-27 12:20:07.420', 'elaine', 'cheka', 'Oranit', 'Israel', 'F','register'
-exec usp_welcome  'sharon', 'a9ghptrbPpd', 'sharons@gmail.com', '2000-03-27 12:20:07.420', 'sharon', 'saul', 'Oranit', 'Israel', 'F','register'
-exec usp_welcome  'mai', 'a9ghppobPpd', 'mai@gmail.com', '2000-03-27 12:20:07.420', 'mai', 'saul', 'Oranit', 'Israel', 'F','register'
-exec usp_welcome  'tanya', 'a9ghptrbPpd', 'tanyas@gmail.com', '2000-03-27 12:20:07.420', 'tanya', 'saul', 'Oranit', 'Israel', 'F','register'
-exec usp_welcome  'malie', 'a9ghptrbPpd', 'malies@gmail.com', '2000-03-27 12:20:07.420', 'malie', 'saul', 'Oranit', 'Ireland', 'F','register'
-exec usp_welcome  'rachel', 'a9ghptrbPpd', 'rachel@gmail.com', '2000-03-27 12:20:07.420', 'rachel', 'cohen', 'Oranit', 'Ireland', 'F','register'
-exec usp_welcome  'patty', 'a9ghptrbPpd', 'pattys@gmail.com', '2000-03-27 12:20:07.420', 'patty', 'sauley', 'Oranit', 'Ireland', 'F','register'
-exec usp_welcome  'harry', 'a9ghptrbPpd', 'harry@gmail.com', '2000-03-27 12:20:07.420', 'harry', 'hamster', 'Oranit', 'Ireland', 'F','register'
-exec usp_welcome  'malie', 'a9ghptrbPpd', 'malies@gmail.com', '2000-03-27 12:20:07.420', 'malie', 'saul', 'Oranit', 'Ireland', 'F','login'
+--exec usp_welcome  'Karina2', 'a9gyfdD9xpd', 'bar@gmail.com', '2000-03-27 12:20:07.420', 'avigail', 'ben', 'Oranit', 'Israel', 'F','register'
+----exec usp_welcome  'Avigail', '11223rD', 'bentovim.avigail@gmail.com', '2000-03-27 12:20:07.420', 'avigail', 'ben', 'Oranit', 'Israel', 'F','register'
+--exec usp_welcome  'Avigail5', 'a9gyfd9xFpd', 'bentovim.avi@gmail.com', '2000-03-27 12:20:07.420', 'avigail', 'ben', 'Oranit', 'Israel', 'F','register'
+--exec usp_welcome  'Avigail', 'rt45Dy', 'bentovim.avigail@gmail.com', '2000-03-27 12:20:07.420', 'avigail', 'ben', 'Oranit', 'Israel', 'F','login'
+--exec usp_welcome  'Avi', '15g1223rD', 'bent.avigail@gmail.com', '2000-03-27 12:20:07.420', 'avigail', 'ben', 'Oranit', 'Israel', 'F','register'
+--exec usp_welcome  'Avi', '15g1223rD', 'bent.avigail@gmail.com', '2000-03-27 12:20:07.420', 'avigail', 'ben', 'Oranit', 'Israel', 'F','login'
+--exec usp_welcome  'Aviv', '15g223rD', 'ben.avigail@gmail.com', '2000-03-27 12:20:07.420', 'avigail', 'ben', 'Oranit', 'Israel', 'F','register'
+--exec usp_welcome  'KAR', 'a9gyd9bPpd', 'barnya@gmail.com', '2000-03-27 12:20:07.420', 'avigail', 'ben', 'Oranit', 'Israel', 'F','register'
+--exec usp_welcome  'KAR', 'a9gyd9bPpd', 'barnya@gmail.com', '2000-03-27 12:20:07.420', 'avigail', 'ben', 'Oranit', 'Israel', 'F','login'
+--exec usp_welcome  'Avigail5', 'Ail56', 'bentovim.avi@gmail.com', '2000-03-27 12:20:07.420', 'avigail', 'ben', 'Oranit', 'Israel', 'F','login'
+--exec usp_welcome  'joel', 'a9gyp9bPpd', 'joa@gmail.com', '2000-03-27 12:20:07.420', 'joa', 'hana', 'Oranit', 'Israel', 'F','register'
+--exec usp_welcome  'mark', 'a9gyp9bPpd', 'markm@gmail.com', '2000-03-27 12:20:07.420', 'mark', 'manny', 'Oranit', 'Israel', 'F','register'
+--exec usp_welcome  'eoin', 'a9gyoyrbPpd', 'eoinb@gmail.com', '2000-03-27 12:20:07.420', 'eoin', 'bar', 'Oranit', 'Israel', 'F','register'
+--exec usp_welcome  'elaine', 'a9gyoptrbPpd', 'elainec@gmail.com', '2000-03-27 12:20:07.420', 'elaine', 'cheka', 'Oranit', 'Israel', 'F','register'
+--exec usp_welcome  'sharon', 'a9ghptrbPpd', 'sharons@gmail.com', '2000-03-27 12:20:07.420', 'sharon', 'saul', 'Oranit', 'Israel', 'F','register'
+--exec usp_welcome  'mai', 'a9ghppobPpd', 'mai@gmail.com', '2000-03-27 12:20:07.420', 'mai', 'saul', 'Oranit', 'Israel', 'F','register'
+--exec usp_welcome  'tanya', 'a9ghptrbPpd', 'tanyas@gmail.com', '2000-03-27 12:20:07.420', 'tanya', 'saul', 'Oranit', 'Israel', 'F','register'
+--exec usp_welcome  'malie', 'a9ghptrbPpd', 'malies@gmail.com', '2000-03-27 12:20:07.420', 'malie', 'saul', 'Oranit', 'Ireland', 'F','register'
+--exec usp_welcome  'rachel', 'a9ghptrbPpd', 'rachel@gmail.com', '2000-03-27 12:20:07.420', 'rachel', 'cohen', 'Oranit', 'Ireland', 'F','register'
+--exec usp_welcome  'patty', 'a9ghptrbPpd', 'pattys@gmail.com', '2000-03-27 12:20:07.420', 'patty', 'sauley', 'Oranit', 'Ireland', 'F','register'
+--exec usp_welcome  'harry', 'a9ghptrbPpd', 'harry@gmail.com', '2000-03-27 12:20:07.420', 'harry', 'hamster', 'Oranit', 'Ireland', 'F','register'
+--exec usp_welcome  'malie', 'a9ghptrbPpd', 'malies@gmail.com', '2000-03-27 12:20:07.420', 'malie', 'saul', 'Oranit', 'Ireland', 'F','login'
 
-exec usp_welcome  'tanya', 'a9ghptrbPpd', 'tanyas@gmail.com', '2000-03-27 12:20:07.420', 'tanya', 'saul', 'Oranit', 'Israel', 'F','login'
-exec usp_welcome  'KARINA', 'a9gyfd9xFpd', 'barjonya@gmail.com', '2000-03-27 12:20:07.420', 'avigail', 'ben', 'Oranit', 'Israel', 'F','login'
+--exec usp_welcome  'tanya', 'a9ghptrbPpd', 'tanyas@gmail.com', '2000-03-27 12:20:07.420', 'tanya', 'saul', 'Oranit', 'Israel', 'F','login'
+--exec usp_welcome  'KARINA', 'a9gyfd9xFpd', 'barjonya@gmail.com', '2000-03-27 12:20:07.420', 'avigail', 'ben', 'Oranit', 'Israel', 'F','login'
 
 --drop proc usp_validate_playerDetails
 --unique username
@@ -99,10 +97,12 @@ exec usp_welcome  'KARINA', 'a9gyfd9xFpd', 'barjonya@gmail.com', '2000-03-27 12:
 --		not 'password' in any combination
 --email address: unique, legal format with @
 --birthdate over 18 years
+
+GO
 -- ================================================
 -- Procedure to validate registration of new player
 -- ================================================
-
+--DROP proc usp_validate_playerDetails
 create or alter proc usp_validate_playerDetails 
            @username usernameDt, @playerPassword playerPasswordDt, 
 		   @email  emailAddressDt, @birthDate birthDateDt,
@@ -147,8 +147,6 @@ begin
 										(select cast(@birthDate as varchar(10)))+ ', @firstName = '+@firstName+
 										', @lastName = '+@lastName+', @playerAddress = '+@playerAddress+
 										', @country = '+@country+', @gender = '+@gender+', @choice = '+@choice
-	--set isolation level
-	set transaction isolation level read Committed
 
 	exec usp_insertAppLog 'usp_validate_playerDetails', @variableString, 'Start of usp_validate_playerDetails procedure.'	
 	--check if new user or personal details change
@@ -209,8 +207,8 @@ begin
 				set @variableString = '@username = '+@username+', @playerPassword = '+@playerPassword
 				exec usp_insertAppLog 'usp_validate_playerDetails', @variableString, 'Validating password. Checking if freqently used'	
 				--check if password exists in git password table
-				if ((select count(gitPassword) from utbl_GitPasswords 
-						where gitPassword = @playerPassword COLLATE SQL_Latin1_General_CP1_CS_AS)=0)
+				if ((select count(EXTPassword) from REFERENCE.utbl_GitPasswords 
+						where EXTPassword = @playerPassword COLLATE SQL_Latin1_General_CP1_CS_AS)=0)
 					begin
 						exec usp_insertAppLog 'usp_validate_playerDetails', @variableString, 'Password is not freqently used - valid'
 						--check if password passes external validations
@@ -261,7 +259,7 @@ begin
 	else
 		begin
 			set @birthDateValid = 'N'
-			print 'Players can only be over '+@adminMinAge
+			print 'Players can only be over '+CONVERT(NVARCHAR,@adminMinAge)
 			exec usp_insertAppLog 'usp_validate_playerDetails', @variableString, 'Player age is invalid.'	
 			--exec usp_welcome 'N' , 'N', @username, @Password, @Email, @birthdate, @FirstName, 
 			--				@LastName, @PlayerAddress, @Country, @Gender
@@ -295,15 +293,15 @@ begin
 		set @variableString = '@username = '+@username+', @email = '+@email+', @birthDate = '+(select cast(@birthDate as varchar(10)))+', @playerPassword = '+@playerPassword
 		exec usp_insertAppLog 'usp_validate_playerDetails', @variableString, 'New registration details are valid. Adding new player to utbl_players'
 		
-		OPEN SYMMETRIC KEY Password_key  
-			DECRYPTION BY CERTIFICATE Password_certificate; 	
+		--OPEN SYMMETRIC KEY Password_key  
+		--	DECRYPTION BY CERTIFICATE Password_certificate; 	
 
 		insert into Admin.utbl_players (username, playerPassword, firstName, lastName, playerAddress, country,
 									emailAddress, gender, birthDate, numFails, isBlocked, loginTime, isConnected)
-						values (@username, EncryptByKey(Key_GUID(@playerPassword), @firstName, @lastName, @playerAddress, @country,
+						values (@username,@playerPassword, @firstName, @lastName, @playerAddress, @country,
 								@email, @gender, @birthdate, @numFails, @isBlocked, @loginTime, @isConnected)
 
-		CLOSE SYMMETRIC KEY Password_key
+		--CLOSE SYMMETRIC KEY Password_key
 
 		exec usp_insertAppLog 'usp_validate_playerDetails', @variableString, 'New registration details are valid. Giving new player welcome bonus'	
 		set @adminBonus = (select cast(companyValue as int) from Admin.utbl_CompanyDefinitions where companyKey = 'welcomeBonus')
@@ -358,8 +356,6 @@ begin
 	set @adminNumTries = (select cast(companyValue as int) from Admin.utbl_CompanyDefinitions where companyKey = 'logonTimes')
 	set @variableString = '@username = '+@username+', @playerPassword = '+@playerPassword+', @numFails = '+(select cast(@numFails as nvarchar(50)) )
 							+', @adminNumTries = '+(select cast(@adminNumTries as nvarchar(50)) )
-	--set isolation level
-	set transaction isolation level read Committed
 
 	exec usp_insertAppLog 'usp_Login', @variableString, 'Start of usp_Login procedure. checking if player blocked'	
 
@@ -467,8 +463,6 @@ begin
 	@variableString			nvarchar(500)
 
 	set @variableString = '@username = '+@username
-	--set isolation level
-	set transaction isolation level read Committed
 
 	exec usp_insertAppLog 'usp_autoPasswordChange', @variableString, 'Creating random password that conforms to validation rules. Begin'	
 	--create random password that conforms to validation rules
@@ -499,8 +493,8 @@ begin
 					exec usp_insertAppLog 'usp_autoPasswordChange', @variableString, 'New random password is valid. Updating utbl_players table'	
 					--update player with new password
 					OPEN SYMMETRIC KEY Password_key  
-							DECRYPTION BY CERTIFICATE Password_certificate; 
-					update Admin.utbl_players set playerPassword = EncryptByKey(Key_GUID(@newPassword),
+							DECRYPTION BY CERTIFICATE Password_certificate;
+					update Admin.utbl_players set playerPassword = @newPassword,
 							isBlocked = 'N',
 							numFails = 0
 							where userName=@username
@@ -553,8 +547,8 @@ begin
 				where p.playerPassword = @newPassword COLLATE SQL_Latin1_General_CP1_CS_AS 
 				or ph.playerPassword = @newPassword COLLATE SQL_Latin1_General_CP1_CS_AS 
 				and p.username = @username)>0) OR
-			((select count(GitPassword) from utbl_GitPasswords 
-				where gitPassword = @newPassword COLLATE SQL_Latin1_General_CP1_CS_AS)>0))
+			((select count(EXTPassword) from REFERENCE.utbl_GitPasswords 
+				where EXTPassword = @newPassword COLLATE SQL_Latin1_General_CP1_CS_AS)>0))
 			begin
 				return ('Y')
 			end
@@ -567,19 +561,20 @@ end
 -- ======================================================================
 -- Procedure to check if the new password syntax is valid
 -- ======================================================================
+GO
 
-
-create or alter function udf_PasswordSyntaxValid (@playerPassword nvarchar(50),  @username usernameDt) returns char
+create or alter function udf_PasswordSyntaxValid (@playerPassword [playerPasswordDt],  @username usernameDt) returns char
 as
 /*
 select dbo.udf_PasswordSyntaxValid
 (
-           'Ad9sdsdxr', 
-		   'Avigail'
+           'Ad9sdsdxr#$%%', 
+		   'Avigail!@#'
+
 )
 */
 begin
-	declare @strongPassLegnth		int
+	declare @strongPassLength		int
 
 		set @strongPassLength = (select cast(companyValue as int) from Admin.utbl_CompanyDefinitions where companyKey = 'strongPassLength')
 
@@ -607,6 +602,7 @@ end;
 go
 
 sp_configure 'clr enabled' , 1
+GO
 	reconfigure
 	go
 
@@ -614,7 +610,7 @@ sp_configure 'clr enabled' , 1
 -- Procedure to check if the new password syntax is valid according
 -- to additional external customer requests
 -- ======================================================================
-
+--DROP function udf_PasswordExtValid
 create or alter function udf_PasswordExtValid (@playerPassword playerPasswordDt) 
 returns char
 as
@@ -655,7 +651,7 @@ reconfigure
 -- Procedure to check player request when entering lobby
 -- player can choose between games/cashier/admin
 -- ======================================================================
-
+GO
 create or alter proc usp_lobby @username usernameDt, @action nvarchar(100)
 as
 /*
@@ -669,8 +665,6 @@ begin
 	DECLARE @variableString nvarchar(500)
 
 	set @variableString = '@username = '+@username+', @action = '+@action
-	--set isolation level
-	set transaction isolation level read Committed
 
 	exec usp_insertAppLog 'usp_lobby', @variableString, 'Start of usp_lobby procedure.'	
 	
@@ -726,7 +720,7 @@ go
 
 create or alter proc usp_admin @username usernameDt, @choice nvarchar(100), @email emailAddressDt, @birthDate birthDateDt,
 	@firstName firstNameDt, @lastName lastNameDt, @playerAddress nvarchar(60), 
-	@country countryDt,  @gender genderDt, @newPassword playerPasswordDt
+	@country countryDt,  @gender genderDt, @newPassword NVARCHAR(50)
 as
 /*
 exec usp_admin
@@ -758,8 +752,6 @@ begin
 	set @variableString = '@username = '+@username+', @choice = '+@choice+', @email = '+@email+', @birthDate = '+(select cast(@birthDate as varchar(10)))+
 						  ', @firstName = '+@firstName+', @lastName = '+@lastName+', @playerAddress = '+@playerAddress+
 						  ', @country = '+@country+', @gender = '+@gender+', @newPassword = '+@newPassword
-	--set isolation level
-	set transaction isolation level read Committed
 
 	exec usp_insertAppLog 'usp_admin', @variableString, 'Start of usp_admin procedure.'	
 
@@ -827,7 +819,6 @@ begin
 			exec usp_validate_playerDetails
 			   @username, @password, @email, @birthdate, @firstName, @lastName, 
 				   @playerAddress, @country, @gender, @choice
-
 		end
 	if (@choice = 'passwordChange')
 		begin
@@ -836,14 +827,14 @@ begin
 
 			--check validation of password
 			if (((select dbo.udf_IsPasswordInPast(@username,@newPassword)) = 'N') and 
-				((select dbo.udf_PasswordSyntaxValid (@newPassword,  @username)) = 'Y') and
+				((select dbo.udf_PasswordSyntaxValid (@newPassword,  @username)) = 'Y') --and
 				((select dbo.udf_PasswordExtValid (@newPassword)) = 'Y'))
 				begin
 					exec usp_insertAppLog 'usp_admin', @variableString, 'Password is valid. Updating Admin.utbl_players table.'	
 					--update player with new password
 					OPEN SYMMETRIC KEY Password_key  
 							DECRYPTION BY CERTIFICATE Password_certificate; 
-					update Admin.utbl_players set playerPassword = EncryptByKey(Key_GUID(@newPassword) where username = @username
+					update Admin.utbl_players set playerPassword = @newPassword where username = @username
 					CLOSE SYMMETRIC KEY Password_key
 				end
 			else
@@ -878,8 +869,6 @@ exec usp_gameGround
 */
 begin
 	declare @variableString nvarchar(500)
-	--set isolation level
-	set transaction isolation level read Committed
 
 	set @variableString = '@username = '+@username+', @gameRequest= '+@gameRequest
 	exec usp_insertAppLog 'usp_gameGround', @variableString, 'Start of usp_gameGround procedure.'	
@@ -952,8 +941,6 @@ begin
 
 	set @variableString = '@username = '+@username+', @numCards = '+(select cast(@numCards as varchar(10)))+
 						  ', @BetAmnt = '+(select CONVERT (VARCHAR(50), @BetAmnt,3))
-	--set isolation level
-	set transaction isolation level read Committed
 
 	exec usp_insertAppLog 'usp_blackJack', @variableString, 'Start of blackJack game. Checking if bet amount <= current bankroll '
 
@@ -972,7 +959,6 @@ begin
 			exec usp_insertAppLog 'usp_blackJack', @variableString, 'Inserting bet to utbl_bankroll table'
 			set @transactionType = 'Bet'
 			exec usp_insertTransactions @username, @BetAmnt, @transactionType, @transactionIdOutput output
-			set @isWin = 'B'
 			set @transactionId = (SELECT @transactionIdOutput)
 			exec udf_updateGame @username, @isWin, @gameName, @transactionId
 
@@ -1116,8 +1102,6 @@ begin
 	@variableString			nvarchar(500)
 
 	set @variableString = '@username = '+@username+', @BetAmnt = '+ (select CONVERT (VARCHAR(50), @BetAmnt,3))
-	--set isolation level
-	set transaction isolation level read Committed
 
 	exec usp_insertAppLog 'usp_slotMachine', @variableString, 'Start of SlotMachine game. Checking if bet amount <= current bankroll '
 
@@ -1136,7 +1120,6 @@ begin
 			exec usp_insertAppLog 'usp_slotMachine', @variableString, 'Inserting bet to utbl_bankroll table'
 			set @transactionType = 'Bet'
 			exec usp_insertTransactions	@username, @BetAmnt, @transactionType, @transactionIdOutput output
-			set @isWin = 'B'
 			set @transactionId = (SELECT @transactionIdOutput)
 			exec udf_updateGame @username, @isWin, @gameName, @transactionId
 			--get symbols
@@ -1182,7 +1165,7 @@ go
 -- ======================================================================
 -- Procedure to update utbl_Transactions table
 -- ======================================================================
-
+--DROP proc usp_insertTransactions
 create or alter proc usp_insertTransactions 
 		@username usernameDt, @transactionAmount transactionAmountDt, @transactionType transactionTypeDt,
 		@transactionIdOutput int output
@@ -1202,8 +1185,6 @@ begin
 	set @transDate = getdate()
 	set @variableString = '@username = '+@username+', @transactionAmount = '+ (select cast(@transactionAmount as varchar(10)))+', @transactionType = '
 							+@transactionType+', @transDate = '+ (select cast(@transDate as varchar(10)))
-	--set isolation level
-	set transaction isolation level read Committed
 
 	exec usp_insertAppLog 'usp_insertTransactions', @variableString, 'Before insert into utbl_transactions'
 	
@@ -1214,7 +1195,7 @@ begin
 	exec usp_insertAppLog 'usp_insertTransactions', @variableString, 'After insert into utbl_transactions'
 
 end
-
+GO
 --drop proc udf_updateGame
 
 -- ======================================================================
@@ -1236,8 +1217,6 @@ begin
 	@variableString			nvarchar(500)
 
 	set @variableString = '@username = '+@username+', @isWin = '+ @isWin+', @gameName = '+@gameName
-	--set isolation level
-	set transaction isolation level read Committed
 
 	exec usp_insertAppLog 'udf_updateGame', @variableString, 'Start of procedure. Checking if win or loss. '
 	set @gameDate = (select getdate())
@@ -1264,10 +1243,10 @@ begin
 		begin			
 			if ((select count(*) from Games.utbl_Games where username = @username and gameName = @gameName) > 0)
 				begin
-					set @winNum = (select winNum from Games.utbl_Games where username = @username and gameName = @gameName)
+					set @winNum = (select win from Games.utbl_Games where username = @username and gameName = @gameName)
 					set @winNum = @winNum +1	
 					update Games.utbl_Games
-						set winNum = @winNum,
+						set win = @winNum,
 						transactionId = @transactionId,
 						roundNum =@roundNum
 						where username = @username 
@@ -1280,68 +1259,22 @@ begin
 				begin
 					set @winNum = 1
 					set @lossNum = 0	
-					insert into Games.utbl_Games (GameName, UserName, winNum, lossNum, roundNum, GameDate, transactionId)
-						values (@gameName, @username, @winNum, @lossNum, @roundNum, @gameDate, @transactionId)
+					insert into Games.utbl_Games (GameName, UserName, win, roundNum, GameDate, transactionId)
+						values (@gameName, @username, @winNum,@roundNum, @gameDate, @transactionId)
 					set @variableString = '@username = '+@username+', @isWin = '+ @isWin+', @gameName = '+@gameName+', @winNum = '+(select cast(@winNum as varchar(10)))
 					exec usp_insertAppLog 'udf_updateGame', @variableString, 'Inserting win for user to utbl_Games. '
 				end
 		end
 	 else if (@IsWin = 'N')
 		begin
-			if ((select count(*) from Games.utbl_Games where username = @username and gameName = @gameName) > 0)
-				begin
-					set @lossNum = (select lossNum from Games.utbl_Games where username = @username and gameName = @gameName)
-					set @lossNum = @lossNum +1	
-					update Games.utbl_Games
-						set lossNum = @lossNum,
-						transactionId = @transactionId,
-						roundNum =@roundNum
-						where username = @username 
-						and gameName = @gameName
-					set @variableString = '@username = '+@username+', @isWin = '+ @isWin+', @gameName = '+
-											@gameName+', @lossNum = '+(select cast(@lossNum as varchar(10)))
-					exec usp_insertAppLog 'udf_updateGame', @variableString, 'Updating number of losses for user in utbl_Games. '
-
-				end
-			else
-				begin
-					set @lossNum = 1
-					set @winNum = 0	
-					insert into Games.utbl_Games (GameName, UserName, winNum, lossNum, roundNum, gameDate, transactionId)
-						values (@gameName, @username, @winNum, @lossNum, @roundNum, @gameDate, @transactionId)
-					set @variableString = '@username = '+@username+', @isWin = '+ @isWin+', @gameName = '+
-											@gameName+', @lossNum = '+(select cast(@lossNum as varchar(10)))
-					exec usp_insertAppLog 'udf_updateGame', @variableString, 'Inserting loss for user to utbl_Games. '
-				end
-			end
-		else if (@IsWin = 'B')
-			begin
-				set @roundNum = @roundNum -1
-				if (@roundNum =0)  set @roundNum = 1
-				if ((select count(*) from Games.utbl_Games where username = @username and gameName = @gameName) > 0)
-					begin
-						set @lossNum = 0
-						set @winNum = 0	
-						update Games.utbl_Games
-							set lossNum = @lossNum,
-							winNum = @winNum,
-							transactionId = @transactionId,
-							roundNum =@roundNum
-							where username = @username 
-							and gameName = @gameName
-						set @variableString = '@username = '+@username+', @isWin = '+ @isWin+', @gameName = '+@gameName
-						exec usp_insertAppLog 'udf_updateGame', @variableString, 'Updating utbl_Games for new bet for user'
-
-					end
-				else
-					begin
-						set @lossNum = 0
-						set @winNum = 0	
-						insert into Games.utbl_Games (GameName, UserName, winNum, lossNum, roundNum, gameDate, transactionId)
-							values (@gameName, @username, @winNum, @lossNum, @roundNum, @gameDate, @transactionId)
-						set @variableString = '@username = '+@username+', @isWin = '+ @isWin+', @gameName = '+@gameName
-						exec usp_insertAppLog 'udf_updateGame', @variableString, 'Inserting new bet in utbl_Games for user'
-					end
+			
+				set @winNum = 0	
+				insert into Games.utbl_Games (GameName, UserName, win, roundNum, gameDate, transactionId)
+					values (@gameName, @username, @winNum, @roundNum, @gameDate, @transactionId)
+				set @variableString = '@username = '+@username+', @isWin = '+ @isWin+', @gameName = '+
+										@gameName
+				exec usp_insertAppLog 'udf_updateGame', @variableString, 'Inserting loss for user to utbl_Games. '
+				
 			end
 
 
@@ -1370,8 +1303,6 @@ declare
 @variableString		nvarchar(500)
 
 set @variableString = '@innerNumCards = '+(select cast(@innerNumCards as varchar(10)))+', @numCards = '+(select cast(@numCards as varchar(10)))
---set isolation level
-set transaction isolation level read Committed
 
 exec usp_insertAppLog 'usp_CardTableFiller', @variableString, 'Before table fill'
 
@@ -1398,107 +1329,12 @@ go
 --drop proc usp_SymbolTableFiller
 --exec usp_SymbolTableFiller
 
--- ======================================================================
--- Procedure to fill symbol table with 6 unique symbols
--- ======================================================================
-
-create or alter proc usp_SymbolTableFiller
-as
-/*
-exec usp_SymbolTableFiller   
-*/
-begin
-	declare 
-	@counter		int		=	0, 
-	@symbol			char(1), 
-	@numSymbols		int		=	6
-
-	--set isolation level
-	set transaction isolation level read Committed
-
-	--remove old symbols from table
-	DBCC CHECKIDENT ('Reference.utbl_SymbolTable', RESEED, 0)  
-	delete from Reference.utbl_SymbolTable
-	--populate table with  6 unique symbols 
-			WHILE @counter <  @numSymbols BEGIN
-				set @counter +=1
-				-- insert card 
-				set @symbol = (select substring('#@%&*!', @counter, 1))
-
-				insert into Reference.utbl_SymbolTable (symbol) values (@symbol)
-			end
-			set @counter = 0
-end
-
---delete from Reference.utbl_SymbolTable
-
---drop proc usp_CompanyDefinitions
-
--- ======================================================================
--- Procedure to insert/update/delete utbl_CompanyDefinitions table 
--- as per request from the Company Management GUI Screen
--- ======================================================================
-
-create or alter proc usp_CompanyDefinitions @action nvarchar(20), @companyKey nvarchar(20), @companyValue nvarchar(50)
-as
-/*
-exec usp_CompanyDefinitions
-           @action			= 'insert',
-		   @companyKey		= 'welcomeBonus',
-		   @companyValue	= '10'	   
-*/
-begin
-	declare @variableString nvarchar(500)
-	set @variableString = '@action = '+@action+', @companyKey = '+ @companyKey+', @companyValue = '+@companyValue
-	--set isolation level
-	set transaction isolation level read Committed
-
-	exec usp_insertAppLog 'usp_CompanyDefinitions', @variableString, 'Before action'
-	if (@action = 'insert')
-		begin
-			exec usp_insertAppLog 'usp_CompanyDefinitions', @variableString, 'Inserting into utbl_CompanyDefinitions table new key and value'
-			if ((select count(companyKey) from Admin.utbl_CompanyDefinitions where companyKey = @companyKey)=0)
-				begin
-					insert into Admin.utbl_CompanyDefinitions (companyKey, companyValue)
-					values (@companyKey, @companyValue);
-				end
-			else
-				begin
-					exec usp_insertAppLog 'usp_CompanyDefinitions', @variableString, 'Cannot insert into utbl_CompanyDefinitions table an existing key'
-				end
-		end
-	if (@action = 'update')
-		begin
-			exec usp_insertAppLog 'usp_CompanyDefinitions', @variableString, 'Updating utbl_CompanyDefinitions table new value for key'
-			update Admin.utbl_CompanyDefinitions
-			set companyvalue = @companyValue
-			where companyKey = @companyKey
-		end
-	if (@action = 'delete')
-		begin
-			exec usp_insertAppLog 'usp_CompanyDefinitions', @variableString, 'Deleting from utbl_CompanyDefinitions table for requested key'
-			delete from Admin.utbl_CompanyDefinitions
-			where companyKey = @companyKey
-		end
-
-	exec usp_insertAppLog 'usp_CompanyDefinitions', @variableString, 'After action'
-
-end
-go
-
---SELECT *
---  FROM msdb..syspolicy_management_facets
---  WHERE execution_mode % 2 = 1;
-
---select * from msdb.dbo.syspolicy_policy_execution_history_details_internal
 
 
---exec usp_logout  'Avigail', 'avi9B'
-go
 -- ======================================================================
 -- Procedure to allow the player to logout
 -- ======================================================================
-
+--DROP proc usp_logout
 create or alter proc usp_logout
            @username usernameDt
 as
@@ -1509,8 +1345,6 @@ exec usp_logout
 begin
 	declare @variableString nvarchar(500)
 	set @variableString = '@userName = '+@userName
-	--set isolation level
-	set transaction isolation level read Committed
 
 	exec usp_insertAppLog 'usp_logout', @variableString, 'User requests to logout of the system. begin'
 
@@ -1539,38 +1373,11 @@ begin
 end 
 
 go
-
--- ======================================================================
--- Procedure to insert records to the utbl_ApplicationLog table
--- for the QA department to see detailed log messages
--- ======================================================================
-
-create or alter proc usp_insertAppLog
-           @objectName nvarchar(50), @variables nvarchar(500), @comments nvarchar(500)
-as
-/*
-exec usp_insertAppLog
-           @objectName			= 'usp_logout',
-		   @variables			= '@userName = Avigail,  @playerPassword = avi9B',
-		   @comments			= 'User logged out of the system'
-*/
-begin
-	declare @execTime datetime = getdate()
-	--set isolation level
-	set transaction isolation level read Committed
-
-	--log player out of the system
-	insert into Admin.utbl_ApplicationLog (objectName, variables, comments, execTime)
-	values (@objectName, @variables, @comments, @execTime)
-end 
-
-go
-
 -- ======================================================================
 -- Procedure to retreive the players bankroll
 -- bankroll = deposit - withdrawal - bet + win + bonus
 -- ======================================================================
-
+--DROP FUNCTION [Admin].[udf_Bankroll]
 CREATE or alter FUNCTION [Admin].[udf_Bankroll]
 (
 	-- Add the parameters for the function here
@@ -1581,7 +1388,7 @@ AS
 /*
 select admin.udf_Bankroll
 (
-			'Avigail'
+			'Afshin3'
  )
 */
 BEGIN
@@ -1609,7 +1416,7 @@ BEGIN
 END
 GO
 
-- ================================================
+-- ================================================
 -- Procedure to insert deposit transaction
 -- ================================================
 SET ANSI_NULLS ON
@@ -1706,9 +1513,9 @@ IF @userName is NULL or @creditCardNumber is NULL or @ExpiryDate is NULL or @dep
 
 									INSERT INTO [Admin].[utbl_Transactions]
 									VALUES
-										(@userName, @depositAmmount, 'Deposit', GETDATE())
+										('Deposit', @depositAmmount, @userName,GETDATE())
 
-									PRINT  'Your current balance ' + CONVERT(nvarchar, dbo.[udf_Bankroll](@userName))
+									PRINT  'Your current balance ' + CONVERT(nvarchar, ADMIN.[udf_Bankroll](@userName))
 								END
 						END
 				END
@@ -1726,7 +1533,7 @@ GO
 -- deposit or withdrawal
 -- ======================================================================
 
-
+--DROP PROCEDURE usp_Cashier
 CREATE OR ALTER PROCEDURE usp_Cashier 
 	@userName	usernameDt, 
 	@action		transactionTypeDt
@@ -1849,7 +1656,7 @@ GO
 -- Procedure that sends a feedback email for players request for 
 -- feedback
 -- ======================================================================
-
+--DROP PROC usp_Feedback
 CREATE OR ALTER PROCEDURE usp_Feedback 
 	-- Add the parameters for the stored procedure here
 	@userName	usernameDt, 
