@@ -181,17 +181,10 @@ CREATE TABLE [Games].[utbl_Games](
 	[ID] [int] IDENTITY(1,1) NOT NULL,
 	[gameName] [nvarchar](50) NOT NULL,
 	[userName] usernameDt,
-	[winNum] [int] NULL,
-	[lossNum] [int] NULL,
+	[win] [tinyint] NULL,
 	[roundNum] [int] NOT NULL,
 	[gameDate] [datetime] NULL,
-	[transactionId] [int] NOT NULL,
-  CONSTRAINT ID_PK PRIMARY KEY (ID),
-    ValidFrom datetime2 GENERATED ALWAYS AS ROW START NOT NULL,
-    ValidTo datetime2 GENERATED ALWAYS AS ROW END NOT NULL,
-  PERIOD FOR SYSTEM_TIME (ValidFrom, ValidTo)) 
-  WITH (SYSTEM_VERSIONING = ON (HISTORY_TABLE = Games.utbl_GamesHistory, 
-  DATA_CONSISTENCY_CHECK = ON));
+	[transactionId] [int] NOT NULL) ON [PRIMARY]
 GO
 
 USE [Casino]
