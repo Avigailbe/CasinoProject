@@ -150,7 +150,7 @@ CREATE TABLE [Games].[utbl_Games](
 	[win] [tinyint] NULL,
 	[roundNum] [int] NOT NULL,
 	[gameDate] [datetime] NULL,
-	[transactionId] [int] NOT NULL) ON [PRIMARY]
+	[transactionId] [int] NOT NULL foreign key references admin.utbl_transations(transationId)) ON [PRIMARY]
 GO
 
 -- Admin Tables
@@ -315,3 +315,36 @@ BEGIN
     FROM
         deleted d;
 END
+
+------ Indexes creation
+
+CREATE CLUSTERED INDEX IX_games_gameDate
+  ON games.utbl_games (gameDate)
+  WITH (STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF,
+         ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON)
+  ON Partitioned(gameDate)
+
+CREATE NON CLUSTERED INDEX IX_games_username_gamename
+  ON games.utbl_games (username, gameName);
+
+CREATE CLUSTERED INDEX IX_players_gameDate
+  ON admin.utbl_players (loginTime)
+  WITH (STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF,
+         ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON)
+  ON Partitioned(loginTime)
+
+CREATE NON CLUSTERED INDEX IX_players_username
+  ON admin.utbl_players (username);
+
+CREATE CLUSTERED INDEX IX_transactions_transDate
+  ON admin.utbl_transactions (transDate)
+  WITH (STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF,
+         ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON)
+  ON Partitioned(transDate)
+
+CREATE NON CLUSTERED INDEX IX_transactions_username
+  ON admin.utbl_transactions (username);
+
+CREATE NON CLUSTERED INDEX IX_ApplicationLog_variables
+  ON [Admin].[utbl_ApplicationLog] (variables)
+
