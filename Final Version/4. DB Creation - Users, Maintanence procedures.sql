@@ -4,26 +4,13 @@ use casino
 go
 --change db to read committed snapshot
 --close sessions to get change
---Only in single_user mode
-alter database Casino
-set single_user
-
-alter database Casino
-set read_committed_snapshot on
-
---open sessions
---Move to Multi User Mode
-alter database Casino
-set multi_user
-
---set isolation level
-set transaction isolation level read Committed
 
 -- ======================================================================
 -- Procedure to create profile for sending e-mails
 -- ======================================================================
-
+go
 drop proc if exists usp_createEmailAccountProfile
+go
 create proc usp_createEmailAccountProfile (	@emailPassword nvarchar(100), @emailusername nvarchar(100),
 											@emailToAddress nvarchar(100), @emailFromAddress nvarchar(100) )
 as
@@ -73,7 +60,7 @@ end
 -- Procedure to create RLS on Game table - to enable only 
 -- the game manager to see the rows for their game.
 -- ======================================================================
-
+go
 create OR ALTER proc usp_create_ManagerUser 
 as
 
@@ -129,7 +116,7 @@ end
 -- in the last 24 hours. if so will receive a bonus
 -- ======================================================================
 
-
+go
 create or alter proc usp_betBonus 	
 as
 /*
@@ -175,6 +162,7 @@ end
 -- checks if connections> numConnectionsAlert
 -- if so will send a mail to admin address at adminMailAddress
 -- ======================================================================
+go
 create or alter proc usp_connectionsCheck 		
 as
 /*
@@ -214,6 +202,7 @@ end
 -- if so will send a mail to admin address at adminMailAddress
 -- ======================================================================
 --drop proc usp_noNewLogins
+go
 create or alter proc usp_noNewLogins 		
 as
 /*
@@ -248,20 +237,24 @@ begin
 							@body=@mailBody
 	end
 end
+go
 
 
-
-Copy
-USE master ;  
+USE casino ;  
 GO  
 -- Create the server audit.
 -- Change the path to a path that the SQLServer Service has access to. 
 DECLARE @AudionPath NVARCHAR(200)
-DECLARE @SQL		NVARCHAR(MAX)
 
 SELECT  @AudionPath = CompanyValue
 FROM [Admin].[utbl_CompanyDefinitions]
 WHERE [CompanyValue] = 'AuditDataChangePath'
+
+USE master ;  
+GO  
+DECLARE @SQL		NVARCHAR(MAX)
+
+
 
 SET @SQL = '
 CREATE SERVER AUDIT DataModification_Security_Audit  
@@ -320,7 +313,7 @@ end
 -- for [DiffBackupCasino] job
 -- if fails, will send a mail to admin
 -- ======================================================================
-
+go
 create or alter proc usp_createDiffBackup 	
 as
 /*
@@ -350,6 +343,7 @@ end
 -- for [logBackupCasino] job
 -- if fails, will send a mail to admin
 -- ======================================================================
+go
 create or alter proc usp_createLogBackup 	
 as
 /*
@@ -379,6 +373,7 @@ end
 -- to check for player activity in last @adminActivePlayer minutes
 -- ======================================================================
 --drop PROCEDURE usp_playerActivity
+go
 CREATE OR ALTER PROCEDURE usp_playerActivity 
 AS
 /*
@@ -425,9 +420,11 @@ END
 -- Procedure to create partitions
 -- for [createDailyPartition] job
 -- ======================================================================
+go
 create PARTITION FUNCTION [partitionFunc_day] (datetime) AS RANGE RIGHT FOR VALUES ('2019-04-13 20:45:58.907');
+go
 CREATE PARTITION SCHEME Partitioned AS PARTITION [partitionFunc_day] TO ([SECONDARY],[PRIMARY])
-
+go
 create OR ALTER procedure usp_createNewPartition 
 AS 
 BEGIN
@@ -445,14 +442,14 @@ BEGIN
 		ALTER PARTITION FUNCTION [partitionFunc_day]() SPLIT RANGE (@CurrentDay)
 	end
 end
-
+go
 --create role to Unmask masked fileds in Players table
 
 USE [Casino]
 GO
 CREATE ROLE [Admin]
 GO
-GRANT UNMASK ON [ADMIN].[utbl_Players] TO [Admin]
+GRANT CONTROL ON [ADMIN].[utbl_Players] TO [Admin]
 GO
 
 ---create linked server to Oracle DB

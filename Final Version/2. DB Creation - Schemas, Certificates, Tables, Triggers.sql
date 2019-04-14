@@ -181,9 +181,15 @@ CREATE TABLE [Admin].utbl_CreditCard
 		(ID ASC
 		)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 	) ON [PRIMARY]
+GO
+ALTER TABLE [Admin].[utbl_CreditCard]     
+ADD CONSTRAINT FK_creditCard_players FOREIGN KEY (username)     
+    REFERENCES [admin].[utbl_Players] (username)     
+    ON DELETE CASCADE    
+    ON UPDATE CASCADE 
+
 
 GO
-
 DROP TABLE IF EXISTS [Admin].[utbl_ApplicationLog]
 CREATE TABLE [Admin].[utbl_ApplicationLog](
 	[id] [int] IDENTITY(1,1) NOT NULL,
@@ -200,10 +206,16 @@ CREATE TABLE [Admin].[utbl_transactions](
 	[transactionId] [int] IDENTITY(1,1) NOT NULL PRIMARY KEY,
 	[transactionType] transactionTypeDt NOT NULL,
 	[transactionAmount] transactionAmountDt NOT NULL,
-	[username] usernameDt ,
+	[username] usernameDt,
 	[transDate] [datetime] NULL
 ) ON [PRIMARY]
 GO
+
+ALTER TABLE [Admin].[utbl_transactions]     
+ADD CONSTRAINT FK_transactions_players FOREIGN KEY (username)     
+    REFERENCES [admin].[utbl_Players] (username)     
+    ON DELETE CASCADE    
+    ON UPDATE CASCADE    
 
 -- Games Tables
 
@@ -318,33 +330,28 @@ END
 
 ------ Indexes creation
 
-CREATE CLUSTERED INDEX IX_games_gameDate
-  ON games.utbl_games (gameDate)
-  WITH (STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF,
-         ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON)
-  ON Partitioned(gameDate)
+--CREATE CLUSTERED INDEX IX_games_gameDate
+--  ON games.utbl_games (gameDate)
+--  WITH (STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF,
+--         ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON)
+--  ON Partitioned(gameDate)
 
-CREATE NONCLUSTERED INDEX IX_games_username_gamename
-  ON games.utbl_games (username, gameName);
+--CREATE NONCLUSTERED INDEX IX_games_username_gamename
+--  ON games.utbl_games (username, gameName);
 
-CREATE CLUSTERED INDEX IX_players_gameDate
-  ON admin.utbl_players (loginTime)
-  WITH (STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF,
-         ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON)
-  ON Partitioned(loginTime)
 
-CREATE NONCLUSTERED INDEX IX_players_username
-  ON admin.utbl_players (username);
+--CREATE NONCLUSTERED INDEX IX_players_username
+--  ON admin.utbl_players (username);
 
-CREATE CLUSTERED INDEX IX_transactions_transDate
-  ON admin.utbl_transactions (transDate)
-  WITH (STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF,
-         ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON)
-  ON Partitioned(transDate)
+--CREATE CLUSTERED INDEX IX_transactions_transDate
+--  ON admin.utbl_transactions (transDate)
+--  WITH (STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF,
+--         ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON)
+--  ON Partitioned(transDate)
 
-CREATE NONCLUSTERED INDEX IX_transactions_username
-  ON admin.utbl_transactions (username);
+--CREATE NONCLUSTERED INDEX IX_transactions_username
+--  ON admin.utbl_transactions (username);
 
-CREATE NONCLUSTERED INDEX IX_ApplicationLog_variables
-  ON [Admin].[utbl_ApplicationLog] (variables)
+--CREATE NONCLUSTERED INDEX IX_ApplicationLog_variables
+--  ON [Admin].[utbl_ApplicationLog] (variables)
 
